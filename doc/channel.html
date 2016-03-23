@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+	<link rel="stylesheet" type="text/css" href="../common.css"/>
+	<title>Mezurit 2 - Channel functions</title>
+</head>
+
+<body>
+
+<div><img src="../logo.png" alt="Mezurit 2"/></div>
+<table id="page"><tr><td class="bar"></td><td class="content">
+
+<h2>Online documentation - Channel functions</h2>
+
+<p>All of the channel functions listed below are usable in both virtual channel definitions and trigger test expressions, with one exception:
+GPIB-based functions which should not be used in trigger tests unless an identical function call exists in a channel definition.
+This ensures that arming the trigger does not generate a new <em class="keyword">gpib slot</em> outside the parse phase, which can cause instability (see technical details <a href="index.html#virtual_channels">here</a>).</p>
+
+<h3>Table of Contents</h3>
+
+<div class="indent"><table class="columns"><tr>
+	<td><p>&bull; <a href="#general_functions">General functions</a><br/>
+	&#8627; <small><em class="mono"><a href="#panel">panel()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#time">time()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#ch">ch()</a></em></small></p></td>
+	<td><p>&bull; <a href="#daq_functions">DAQ functions</a><br/>
+	&#8627; <small><em class="mono"><a href="#DAC">DAC()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#ADC">ADC()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#DAC0">DAC0()</a></em>, <em class="mono"><a href="#DAC1">DAC1()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#VDAC0">VDAC0()</a></em>, <em class="mono"><a href="#VDAC1">VDAC1()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#ADC0">ADC0()</a></em>...<em class="mono"><a href="#ADC15">ADC15()</a></em></small></p></td>
+	<td><p>&bull; <a href="#gpib_functions">GPIB functions</a><br/>
+	&#8627; <small><em class="mono"><a href="#A8648_Freq">A8648_Freq()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#A8648_Ampl">A8648_Ampl()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#SR830_SineOut">SR830_SineOut()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#SR830_SensIn">SR830_SensIn()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#ITC503_Temp">ITC503_Temp()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#IPS120_Field">IPS120_Field()</a></em></small></p></td>
+	<td><p>&bull; <a href="#utility_functions">Utility functions</a><br/>
+	&#8627; <small><em class="mono"><a href="#mag">mag()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#divide">divide()</a></em></small></p></td>
+</tr></table></div>
+
+<h3 id="general_functions">General functions</h3>
+
+<div class="indent">
+
+	<p id="panel" class="function">panel ()</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>return value</td><td>int</td><td>Index of the current panel, e.g. 0 for Panel 0</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="terminal.html#get_panel">get_panel()</a></em></p></div>
+
+	<p id="time" class="function">time ()</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>return value</td><td>float</td><td>Time in seconds since the current panel was first started or its timer was reset</td></tr>
+	</table><p class="function-note"><i>see also</i>: <em class="mono"><a href="terminal.html#get_time">get_time()</a></em></p></div>
+
+	<p id="ch" class="function">ch (channel)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>channel     </td><td>int  </td><td>Index of virtual channel, i.e. 2 for X<sub>2</sub></td></tr>
+		<tr><td>return value</td><td>float</td><td>Current value of X<sub>vci</sub>, sans SI prefix.
+		For example, if X<sub>3</sub> = 3.4 mV, <em class="mono">ch(4)</em> would return 0.0034.</td></tr>
+	</table><p class="function-note"><i>see also</i>: <em class="mono"><a href="terminal.html#channel_value">channel_value()</a></em></p></div>
+
+	<p><em class="warning">Warning:</em>
+	To avoid undefined behavior, <em class="mono">ch()</em> should refer only to channels with lower index than the channel in which it is used.
+	For example, X<sub>2</sub> may contain <em class="mono">ch(0)</em> or <em class="mono">ch(1)</em> but not <em class="mono">ch(3)</em>, <em class="mono">ch(4)</em>, etc.</p>
+
+</div>
+
+<h3 id="daq_functions">DAQ functions</h3>
+
+<div class="indent">
+
+	<p id="DAC" class="function">DAC (brd, n)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>brd         </td><td>int  </td><td>Index of a DAQ board: 0 or 1 for physical boards, 2 for virtual board.</td></tr>
+		<tr><td>n           </td><td>int  </td><td>Index of a physical channel: 0 ... N<sub>DAC</sub>, where N<sub>DAC</sub> is board-dependent.</td></tr>
+		<tr><td>return value</td><td>float</td><td>Current analog output voltage.</td></tr>
+	</table></div>
+
+	<p id="ADC" class="function">ADC (brd, n)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>brd         </td><td>int  </td><td>Index of a DAQ board: 0 or 1 for physical boards, 2 for virtual board.</td></tr>
+		<tr><td>n           </td><td>int  </td><td>Index of a physical channel: 0 ... N<sub>DAC</sub>, where N<sub>DAC</sub> is board-dependent.</td></tr>
+		<tr><td>return value</td><td>float</td><td>Current analog input voltage.</td></tr>
+	</table></div>
+
+	<p id="DAC0" class="function">DAC0 ()<br id="DAC1"/>DAC1 ()</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>return value</td><td>float</td><td>Current voltage of analog output 0/1 on board 0.</td></tr>
+	</table></div>
+
+	<p id="VDAC0" class="function">VDAC0 ()<br id="VDAC1"/>VDAC1 ()</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>return value</td><td>float</td><td>Current voltage of analog output 0/1 on virtual board.</td></tr>
+	</table></div>
+
+	<p id="ADC0" class="function">ADC0 ()<br/>&#8942;<br id="ADC15"/>ADC15 ()</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>return value</td><td>float</td><td>Current voltage of analog input 0/1/.../15 on board 0.</td></tr>
+	</table></div>
+
+</div>
+
+<h3 id="gpib_functions">GPIB functions</h3>
+
+<div class="indent">
+
+	<p>Don't see your instrument/parameter on this list? Learn how to quickly and easily add your own functions <a href="gpib.html#channel_functions">here</a>.</p>
+
+	<p id="A8648_Freq" class="function">A8648_Freq (brd, pad)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>brd         </td><td>int  </td><td>Index of GPIB board: 0 or 1 for physical boards, 2 for virtual board.</td></tr>
+		<tr><td>pad         </td><td>int  </td><td>Primary address of the instrument: 1 ... 31 (typ.: 18).</td></tr>
+		<tr><td>return value</td><td>float</td><td>Agilent <a href="http://www.home.agilent.com/agilent/product.jspx?cc=US&amp;lc=eng&amp;ckey=1000002195:epsg:pro&amp;nid=-35540.536879772.00&amp;id=1000002195:epsg:pro&amp;pselect=SR.GENERAL">8648</a> signal generator output frequency in Hz.</td></tr>
+	</table><p class="function-note"><i>command:</i> <em class="mono">FREQ:CW</em> (read and write)</p></div>
+
+	<p id="A8648_Ampl" class="function">A8648_Ampl (brd, pad)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>brd         </td><td>int  </td><td>Index of GPIB board: 0 or 1 for physical boards, 2 for virtual board.</td></tr>
+		<tr><td>pad         </td><td>int  </td><td>Primary address of the instrument: 1 ... 31 (typ.: 18).</td></tr>
+		<tr><td>return value</td><td>float</td><td>Agilent <a href="http://www.home.agilent.com/agilent/product.jspx?cc=US&amp;lc=eng&amp;ckey=1000002195:epsg:pro&amp;nid=-35540.536879772.00&amp;id=1000002195:epsg:pro&amp;pselect=SR.GENERAL">8648</a> signal generator output amplitude in Volts (rms).</td></tr>
+	</table><p class="function-note"><i>command:</i> <em class="mono">POW:AMPL</em> (read and write)</p></div>
+
+	<p id="SR830_SineOut" class="function">SR830_SineOut (brd, pad)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>brd         </td><td>int  </td><td>Index of GPIB board: 0 or 1 for physical boards, 2 for virtual board.</td></tr>
+		<tr><td>pad         </td><td>int  </td><td>Primary address of the instrument: 1 ... 31 (typ.: 18).</td></tr>
+		<tr><td>return value</td><td>float</td><td>SRS <a href="http://www.thinksrs.com/products/SR810830.htm">SR830</a> lock-in amplifier output amplitude in Volts (rms).</td></tr>
+	</table><p class="function-note"><i>command:</i> <em class="mono">SLVL</em> (read and write)</p></div>
+
+	<p id="SR830_SensIn" class="function">SR830_SensIn (brd, pad)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>brd         </td><td>int  </td><td>Index of GPIB board: 0 or 1 for physical boards, 2 for virtual board.</td></tr>
+		<tr><td>pad         </td><td>int  </td><td>Primary address of the instrument: 1 ... 31 (typ.: 18).</td></tr>
+		<tr><td>return value</td><td>float</td><td>SRS <a href="http://www.thinksrs.com/products/SR810830.htm">SR830</a> lock-in amplifier input sensitvity in V/V.</td></tr>
+	</table><p class="function-note"><i>command:</i> <em class="mono">SENS</em> (read-only)</p></div>
+
+	<p id="ITC503_Temp" class="function">ITC503_Temp (brd, pad)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>brd         </td><td>int  </td><td>Index of GPIB board: 0 or 1 for physical boards, 2 for virtual board.</td></tr>
+		<tr><td>pad         </td><td>int  </td><td>Primary address of the instrument: 1 ... 31 (typ.: 18).</td></tr>
+		<tr><td>return value</td><td>float</td><td>Oxford ITC503 temperature controller sensor #1 temperature in Kelvin.</td></tr>
+	</table><p class="function-note"><i>command:</i> <em class="mono">R1</em> (read-only)</p></div>
+
+	<p id="IPS120_Field" class="function">IPS120_Field (brd, pad)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>brd         </td><td>int  </td><td>Index of GPIB board: 0 or 1 for physical boards, 2 for virtual board.</td></tr>
+		<tr><td>pad         </td><td>int  </td><td>Primary address of the instrument: 1 ... 31 (typ.: 18).</td></tr>
+		<tr><td>return value</td><td>float</td><td>Oxford IPS120 superconducting magnet power supply flux density in Tesla.</td></tr>
+	</table><p class="function-note"><i>command:</i> <em class="mono">R8</em> (read-only)</p></div>
+
+</div>
+
+<h3 id="utility_functions">Utility functions</h3>
+
+<div class="indent">
+
+	<p id="mag" class="function">mag (X, Y)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>X           </td><td>float</td><td>Number</td></tr>
+		<tr><td>Y           </td><td>float</td><td>Number</td></tr>
+		<tr><td>return value</td><td>float</td><td>Magnitude of X + iY</td></tr>
+	</table></div>
+
+	<p id="divide" class="function">divide (N, D, level)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>N           </td><td>float</td><td>Numerator</td></tr>
+		<tr><td>D           </td><td>float</td><td>Denominator</td></tr>
+		<tr><td>level       </td><td>float</td><td>Minimum denominator value for safe division</td></tr>
+		<tr><td>return value</td><td>float</td><td>N/D unless abs(D) &lt; level, in which case return 0</td></tr>
+	</table></div>
+
+</div>
+
+</td><td class="menu">
+	<p><a href="../index.html">Home</a></p>
+	<p><a href="index.html">Online manual</a></p>
+	<p class="mini-indent"><b>Channel&nbsp;func.</b></p>
+	<p class="mini-indent"><a href="trigger.html">Trigger&nbsp;func.</a></p>
+	<p class="mini-indent"><a href="terminal.html">Terminal&nbsp;func.</a></p>
+	<p class="mini-indent"><a href="gpib.html">GPIB</a></p>
+	<p class="mini-indent"><a href="oldversion.html">Old version</a></p>
+	<p class="mini-indent"><a href="installed_files.html">Installed files</a></p>
+	<p><a href="../install.html">Installation</a></p>
+	<p><a href="../devel.html">Development</a></p>
+	<p><a href="../dl/">Downloads</a></p>
+</td></tr></table>
+
+<div id="footer"><p id="validate">W3C Validate [ <a href="http://validator.w3.org/check?uri=referer">XHTML</a> / <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> ]</p></div>
+
+</body>
+</html>

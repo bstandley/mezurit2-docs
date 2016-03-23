@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+	<link rel="stylesheet" type="text/css" href="../common.css"/>
+	<title>Mezurit 2 - Trigger functions</title>
+</head>
+
+<body>
+
+<div><img src="../logo.png" alt="Mezurit 2"/></div>
+<table id="page"><tr><td class="bar"></td><td class="content">
+
+<h2>Online documentation - Trigger functions</h2>
+
+<p>Many trigger functions are similar to terminal functions and vice versa.
+Equivalent or related terminal functions are noted where appropriate.
+Trigger functions by definition return <em class="mono">True</em> on success, <em class="mono">False</em> on failure.
+In this context, however, success simply means that the command was successfully received with no argument errors, not that the action itself succeeded.</p>
+
+<p><em class="note">Note:</em>
+Trigger functions are not the same as <em class="keyword">trigger tests</em>, which are constructed from a subset of the <a href="channel.html">channel functions</a>.</p>
+
+<h3>Table of Contents</h3>
+
+<div class="indent"><table class="columns"><tr>
+	<td><p>&bull; <a href="#general_functions">General functions</a><br/>
+	&#8627; <small><em class="mono"><a href="#wait">wait()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#set_recording">set_recording()</a></em></small></p>
+	<p>&bull; <a href="#dac_control_functions">DAC control functions</a><br/>
+	&#8627; <small><em class="mono"><a href="#set_dac">set_dac()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#sweep_up">sweep_up()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#sweep_down">sweep_down()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#sweep_stop">sweep_stop()</a></em></small></p></td>
+	<td><p>&bull; <a href="#scope_functions">Scope functions</a><br/>
+	&#8627; <small><em class="mono"><a href="#request_pulse">request_pulse()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#cancel_pulse">cancel_pulse()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#fire_scope">fire_scope()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#cancel_scope">cancel_scope()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#fire_scope_pulse">fire_scope_pulse()</a></em></small></p></td>
+	<td><p>&bull; <a href="#trigger_functions">Trigger functions</a><br/>
+	&#8627; <small><em class="mono"><a href="#arm_trigger">arm_trigger()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#disarm_trigger">disarm_trigger()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#force_trigger">force_trigger()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#cancel_trigger">cancel_trigger()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#emit_signal">emit_signal()</a></em></small></p></td>
+	<td><p>&bull; <a href="#buffer_functions">Buffer functions</a><br/>
+	&#8627; <small><em class="mono"><a href="#new_set">new_set()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#t_zero">t_zero()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#save_data">save_data()</a></em></small></p></td>
+</tr></table></div>
+
+<h3 id="general_functions">General functions</h3>
+
+<div class="indent">
+
+	<p id="wait" class="function">wait (delta_t)</p>
+	<div class="indent"><table class="function">
+		<tr><td><b>delta_t</b></td><td>float</td><td>Time in seconds to pause before continuing to the next trigger line</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="terminal.html#xleep">xleep()</a></em></p></div>
+
+	<p id="set_recording" class="function">set_recording (on)</p>
+	<div class="indent"><table class="function">
+		<tr><td><b>on</b></td><td>bool</td><td><em class="mono">True</em> to start, <em class="mono">False</em> to stop recording data</td></tr>
+ 	</table><p class="function-note"><i>see also</i>: <em class="mono"><a href="terminal.html#set_recording">set_recording()</a></em></p></div>
+
+</div>
+
+<h3 id="dac_control_functions">DAC control functions</h3>
+
+<div class="indent">
+
+	<p id="set_dac" class="function">set_dac (channel, target)</p>
+	<div class="indent"><table class="function">
+		<tr><td><b>channel</b></td><td>int  </td><td>Index of virtual channel to set (e.g. <em class="mono">2</em> for X<sub>2</sub>), must be <em class="keyword">invertible</em></td></tr>
+		<tr><td><b>target </b></td><td>float</td><td>Target value in scaled units (e.g. mV)</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="terminal.html#set_dac">set_dac()</a></em></p></div>
+
+	<p id="sweep_up" class="function">sweep_up&nbsp;&nbsp; (channel)<br id="sweep_down"/>sweep_down (channel)<br id="sweep_stop"/>sweep_stop (channel)</p>
+	<div class="indent"><table class="function">
+		<tr><td><b>channel</b></td><td>int </td><td>Index of virtual channel to start or stop sweeping</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="terminal.html#sweep_up">sweep_up()</a></em>, <em class="mono"><a href="terminal.html#sweep_down">sweep_down()</a></em>, <em class="mono"><a href="terminal.html#sweep_stop">sweep_stop()</a></em></p></div>
+
+</div>
+
+<h3 id="scope_functions">Scope functions</h3>
+
+<div class="indent">
+
+	<p id="request_pulse" class="function">request_pulse (channel, target)</p>
+	<div class="indent"><table class="function">
+		<tr><td><b>channel</b></td><td>int  </td><td>Index of virtual channel to pulse when (and if) scope fires, must be invertible</td></tr>
+		<tr><td><b>target </b></td><td>float</td><td>Target value in scaled units (e.g. mV)</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="terminal.html#request_pulse">request_pulse()</a></em></p></div>
+
+	<p id="cancel_pulse" class="function">cancel_pulse (channel)</p>
+	<div class="indent"><table class="function">
+		<tr><td><b>channel</b></td><td>int </td><td>Index of virtual channel which should not be pulsed</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="terminal.html#cancel_pulse">cancel_pulse()</a></em></p></div>
+
+	<p id="fire_scope" class="function">fire_scope&nbsp;&nbsp; ()<br id="cancel_scope"/>cancel_scope ()</p>
+	<div class="indent"><p class="function-note"><i>see also:</i> <em class="mono"><a href="terminal.html#fire_scope">fire_scope()</a></em>, <em class="mono"><a href="terminal.html#cancel_scope">cancel_scope()</a></em></p></div>
+
+	<p id="fire_scope_pulse" class="function">fire_scope_pulse (channel, target)</p>
+	<div class="indent"><table class="function">
+		<tr><td><b>channel</b></td><td>int  </td><td>Virtual channel to pulse, must be invertible</td></tr>
+		<tr><td><b>target </b></td><td>float</td><td>Target value in scaled units (e.g. mV)</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="terminal.html#fire_scope_pulse">fire_scope_pulse()</a></em></p></div>
+
+</div>
+
+<h3 id="trigger_functions">Trigger functions</h3>
+
+<div class="indent">
+
+	<p id="arm_trigger" class="function">arm_trigger&nbsp;&nbsp;&nbsp; (id)<br id="disarm_trigger"/>disarm_trigger (id)</p>
+	<div class="indent"><table class="function">
+		<tr><td><b>id</b></td><td>int</td><td>Index of trigger to <em class="keyword">arm</em> or <em class="keyword">disarm</em>, range: 0 ... 7</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="terminal.html#arm_trigger">arm_trigger()</a></em>, <em class="mono"><a href="terminal.html#disarm_trigger">disarm_trigger()</a></em></p></div>
+
+	<p id="force_trigger" class="function">force_trigger&nbsp; (id)<br id="cancel_trigger"/>cancel_trigger (id)</p>
+	<div class="indent"><table class="function">
+		<tr><td><b>id</b></td><td>int</td><td>Index of trigger to start (<em class="keyword">force</em>) or stop, range: 0 ... 7</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="terminal.html#force_trigger">force_trigger()</a></em>, <em class="mono"><a href="terminal.html#cancel_trigger">cancel_trigger()</a></em></p></div>
+
+	<p id="emit_signal" class="function">emit_signal (signal)</p>
+	<div class="indent"><table class="function">
+		<tr><td><b>signal</b></td><td>str</td><td>Text <em class="keyword">signal</em> to emit (an arbitrary string)</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="terminal.html#catch_signal">catch_signal()</a></em></p></div>
+
+</div>
+
+<h3 id="buffer_functions">Buffer functions</h3>
+
+<div class="indent">
+
+	<p id="new_set" class="function">new_set ()</p>
+	<div class="indent"><p class="function-note"><i>see also:</i> <em class="mono"><a href="terminal.html#new_set">new_set()</a></em></p></div>
+
+	<p id="t_zero" class="function">t_zero ()</p>
+	<div class="indent"><p class="function-note"><i>effect: Reset the current panel timer</i><br/>
+	<i>see also:</i> <em class="mono"><a href="terminal.html#t_zero">t_zero()</a></em></p></div>
+
+	<p id="save_data" class="function">save_data (filename)</p>
+	<div class="indent"><table class="function">
+		<tr><td><b>filename</b></td><td>str</td><td>Relative or absolute filename to which to save data (if already existing, data will be appended)</td></tr>
+	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="terminal.html#save_data">save_data()</a></em></p></div>
+
+</div>
+
+</td><td class="menu">
+	<p><a href="../index.html">Home</a></p>
+	<p><a href="index.html">Online manual</a></p>
+	<p class="mini-indent"><a href="channel.html">Channel&nbsp;func.</a></p>
+	<p class="mini-indent"><b>Trigger&nbsp;func.</b></p>
+	<p class="mini-indent"><a href="terminal.html">Terminal&nbsp;func.</a></p>
+	<p class="mini-indent"><a href="gpib.html">GPIB</a></p>
+	<p class="mini-indent"><a href="oldversion.html">Old version</a></p>
+	<p class="mini-indent"><a href="installed_files.html">Installed files</a></p>
+	<p><a href="../install.html">Installation</a></p>
+	<p><a href="../devel.html">Development</a></p>
+	<p><a href="../dl/">Downloads</a></p>
+</td></tr></table>
+
+<div id="footer"><p id="validate">W3C Validate [ <a href="http://validator.w3.org/check?uri=referer">XHTML</a> / <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> ]</p></div>
+
+</body>
+</html>

@@ -1,0 +1,15 @@
+BUGS
+
+- Lower limit of axis may not properly restore from configuration file.
+- Incomplete widget draw/refresh on Windows.
+- Memory leak in panel mode on Windows. (To alleviate, hide Acquisition section during long measurement.
+
+TODO
+
+- Implement "Save config alongside data" and "Save screenshot alongside data".
+- Make clear_buffer() available as a trigger function.
+- Make sweep controls aware of "Pause GPIB" function.
+- Implement --config command line option.
+- Test older config files.
+- GTK3 compatibility.
+- Python 3 compatibility.

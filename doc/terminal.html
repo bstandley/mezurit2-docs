@@ -1,0 +1,410 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+	<link rel="stylesheet" type="text/css" href="../common.css"/>
+	<title>Mezurit 2 - Terminal functions</title>
+</head>
+
+<body>
+
+<div><img src="../logo.png" alt="Mezurit 2"/></div>
+<table id="page"><tr><td class="bar"></td><td class="content">
+
+<h2>Online documentation - Terminal functions</h2>
+
+<p><em class="keyword">Terminal functions</em> (also called <em class="keyword">terminal commands</em>) are defined in <em class="mono">/usr/lib/mezurit2/mezurit2control.py</em> and <em class="mono">~/.config/mezurit2/terminal.py</em> (see <a href="installed_files.html">Installed files</a>).
+For more information on adding new functions, go <a href="index.html#terminal">here</a>.</p>
+
+<p>Many terminal functions are similar to compute (channel or trigger) functions and vice versa.
+Equivalent or related functions are noted where appropriate.
+All standard terminal functions are detailed here except for utility and demonstration functions.</p>
+
+<p><em class="note">Note:</em>
+Several functions expose features that are not present in the GUI, including <em class="mono"><a href="#gpib">gpib()</a></em>, <em class="mono"><a href="#request_pulse">request_pulse()</a></em>, <em class="mono"><a href="#fire_scope_pulse">fire_scope_pulse()</a></em>, <em class="mono"><a href="#sweep_link">sweep_link()</a></em>, and <em class="mono"><a href="#set_follower">set_follower()</a></em>.</p>
+
+<h3>Table of Contents</h3>
+
+<div class="indent"><table class="columns"><tr>
+	<td><p>&bull; <a href="#general_functions">General functions</a><br/>
+	&#8627; <small><em class="mono"><a href="#xleep">xleep()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#gpib">gpib()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#set_panel">set_panel()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#get_panel">get_panel()</a></em></small></p>
+	<p>&bull; <a href="#configuration_functions">Configuration functions</a><br/>
+	&#8627; <small><em class="mono"><a href="#save_config_file">save_config_file()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#load_config_file">load_config_file()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#save_user_default">save_user_default()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#load_user_default">load_user_default()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#load_system_default">load_system_default()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#load_internal_default">load_internal_default()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#load_last_config">load_last_config()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#set_var">set_var()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#get_var">get_var()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#get_sweep_id">get_sweep_id()</a></em></small></p></td>
+	<td><p>&bull; <a href="#acquisition_functions">Acquisition functions</a><br/>
+	&#8627; <small><em class="mono"><a href="#set_recording">set_recording()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#gpib_pause">gpib_pause()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#get_time">get_time()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#channel_value">channel_value()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#channel_known">channel_known()</a></em></small></p>
+	<p>&bull; <a href="#dac_control_functions">DAC control functions</a><br/>
+	&#8627; <small><em class="mono"><a href="#set_dac">set_dac()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#sweep_up">sweep_up()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#sweep_down">sweep_down()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#sweep_stop">sweep_stop()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#catch_sweep">catch_sweep()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#sweep_link">sweep_link()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#sweep_link_clear">sweep_link_clear()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#set_follower">set_follower()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#remove_follower">remove_follower()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#show_followers">show_followers()</a></em></small></p></td>
+	<td><p>&bull; <a href="#scope_functions">Scope functions</a><br/>
+	&#8627; <small><em class="mono"><a href="#request_pulse">request_pulse()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#cancel_pulse">cancel_pulse()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#fire_scope">fire_scope()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#cancel_scope">cancel_scope()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#fire_scope_pulse">fire_scope_pulse()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#catch_scan_start">catch_scan_start()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#catch_scan_finish">catch_scan_finish()</a></em></small></p>
+	<p>&bull; <a href="#trigger_functions">Trigger functions</a><br/>
+	&#8627; <small><em class="mono"><a href="#arm_trigger">arm_trigger()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#disarm_trigger">disarm_trigger()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#force_trigger">force_trigger()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#cancel_trigger">cancel_trigger()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#catch_signal">catch_signal()</a></em></small></p></td>
+	<td><p>&bull; <a href="#buffer_functions">Buffer functions</a><br/>
+	&#8627; <small><em class="mono"><a href="#new_set">new_set()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#t_zero">t_zero()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#save_data">save_data()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#clear_buffer">clear_buffer()</a></em></small></p>
+	<p>&bull; <a href="#autosweep_functions">Autosweep functions</a><br/>
+	&#8627; <small><em class="mono"><a href="#megasweep_estimate">megasweep_estimate()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#megasweep_up">megasweep_up()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#megasweep_down">megasweep_down()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#minisweep_up">minisweep_up()</a></em></small><br/>
+	&#8627; <small><em class="mono"><a href="#minisweep_down">minisweep_down()</a></em></small></p></td>
+</tr></table></div>
+
+<h3 id="general_functions">General functions</h3>
+
+<div class="indent">
+
+	<p id="xleep" class="function">xleep (delta_t)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>delta_t     </td><td>float</td><td>Time in seconds to pause before continuing</td></tr>
+		<tr><td>return value</td><td>bool </td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="trigger.html#wait">wait()</a></em></p></div>
+
+	<p id="gpib" class="function">gpib (brd, pad, msg, eos=0x0, expect_reply=True)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>brd         </td><td>int </td><td>Index of GPIB board: 0 or 1 for physical boards, 2 for virtual board</td></tr>
+		<tr><td>pad         </td><td>int </td><td>Primary address of the instrument: 1 ... 31</td></tr>
+		<tr><td>msg         </td><td>str </td><td>GPIB message to send</td></tr>
+		<tr><td>eos         </td><td>int </td><td>(Optional) End-of-string byte to use for the instrument, default: 0x0</td></tr>
+		<tr><td>expect_reply</td><td>bool</td><td>(Optional) Whether Mezurit 2 should wait for a reply from the instrument, default: <em class="mono">True</em></td></tr>
+		<tr><td>return value</td><td>str </td><td>Reply (if applicable)</td></tr>
+	</table></div>
+
+	<p id="set_panel" class="function">set_panel (pid)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>pid         </td><td>int </td><td>Index of desired page (-1 for Setup, 0 or 1 for Panels)</td></tr>
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+	</table></div>
+
+	<p id="get_panel" class="function">get_panel ()</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>return value</td><td>int</td><td>Index of the current panel, e.g. 0 for Panel 0 (-1 for Setup)</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="channel.html#panel">panel()</a></em></p></div>
+
+</div>
+
+<h3 id="configuration_functions">Configuration functions</h3>
+
+<div class="indent">
+
+	<p><i>Note:</i> Config files may be saved at any time, but loaded in <em class="keyword">setup mode</em> only.</p>
+
+	<p id="save_config_file" class="function">save_config_file (filename)<br id="load_config_file"/>load_config_file (filename)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>filename    </td><td>str </td><td>Relative or absolute path to config file</td></tr>
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+	</table></div>
+
+	<p id="save_user_default" class="function">save_user_default ()</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+	</table><p class="function-note"><i>effect: Save the current configuration to <em class="mono">~/.config/mezurit2/default.mcf</em> (see <a href="installed_files.html">Installed files</a>).</i></p></div>
+
+	<p id="load_user_default" class="function">load_user_default&nbsp;&nbsp;&nbsp;&nbsp; ()<br id="load_system_default"/>load_system_default&nbsp;&nbsp; ()<br id="load_internal_default"/>load_internal_default ()</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+	</table><p class="function-note"><i>effect: Load a default configuration.</i></p></div>
+
+	<p id="load_last_config" class="function">load_last_config ()</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+	</table><p class="function-note"><i>effect: Load the configuration present on last shutdown.</i></p></div>
+
+	<p id="set_var" class="function">set_var (line)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>line        </td><td>str </td><td>Setting in the form <em class="mono">'variable=value'</em> (see any MCF file for a complete list of possible variables)</td></tr>
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+	</table></div>
+
+	<p id="get_var" class="function">get_var (var)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>var         </td><td>str</td><td>Setting to query, i.e. the <em class="mono">variable</em> in <em class="mono">'variable=value'</em></td></tr>
+		<tr><td>return value</td><td>str</td><td>Value as a string if the variable was found, otherwise <em class="mono">''</em>.</td></tr>
+	</table></div>
+
+	<p id="get_sweep_id" class="function">get_sweep_id (channel)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>channel     </td><td>int</td><td>Index of virtual channel</td></tr>
+		<tr><td>return value</td><td>int</td><td>Associated sweep id (-1 if not invertible, -2 if argument error)</td></tr>
+	</table><p>This function is needed to determine the config string for a sweep setting, as explained <a href="index.html#get_sweep_id_example">here</a>.</p></div>
+
+</div>
+
+<h3 id="acquisition_functions">Acquisition functions</h3>
+
+<div class="indent">
+
+	<p id="set_recording" class="function">set_recording (on)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>on          </td><td>bool</td><td><em class="mono">True</em> to start, <em class="mono">False</em> to stop recording data</td></tr>
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+ 	</table><p class="function-note"><i>see also</i>: <em class="mono"><a href="trigger.html#set_recording">set_recording()</a></em></p></div>
+
+	<p id="gpib_pause" class="function">gpib_pause (paused)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>paused      </td><td>bool</td><td><em class="mono">True</em> to cease, <em class="mono">False</em> to resume updating GPIB channel functions</td></tr>
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+	</table></div>
+
+	<p id="get_time" class="function">get_time ()</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>return value</td><td>float</td><td>Time in seconds since the current panel was first started or its timer was reset</td></tr>
+	</table><p class="function-note"><i>see also</i>: <em class="mono"><a href="channel.html#time">time()</a></em></p></div>
+
+	<p id="channel_value" class="function">channel_value (channel)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>channel     </td><td>int  </td><td>Index of virtual channel, i.e. 2 for X<sub>2</sub></td></tr>
+		<tr><td>return value</td><td>float</td><td>Current value of X<sub>channel</sub>, if known, otherwise 0</td></tr>
+	</table><p class="function-note"><i>see also</i>: <em class="mono"><a href="channel.html#ch">ch()</a></em></p></div>
+
+	<p id="channel_known" class="function">channel_known (channel)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>channel     </td><td>int </td><td>Index of virtual channel, i.e. 2 for X<sub>2</sub></td></tr>
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> if the value of X<sub>channel</sub> is known, otherwise <em class="mono">False</em></td></tr>
+	</table></div>
+
+</div>
+
+<h3 id="dac_control_functions">DAC control functions</h3>
+
+<div class="indent">
+
+	<p id="set_dac" class="function">set_dac (channel, target)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>channel     </td><td>int  </td><td>Index of virtual channel to set (e.g. <em class="mono">2</em> for X<sub>2</sub>), must be <em class="keyword">invertible</em></td></tr>
+		<tr><td>target      </td><td>float</td><td>Target value in scaled units (e.g. mV)</td></tr>
+		<tr><td>return value</td><td>bool </td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="trigger.html#set_dac">set_dac()</a></em></p></div>
+
+	<p id="sweep_up" class="function">sweep_up&nbsp;&nbsp; (channel)<br id="sweep_down"/>sweep_down (channel)<br id="sweep_stop"/>sweep_stop (channel)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>channel     </td><td>int </td><td>Index of virtual channel to start or stop sweeping</td></tr>
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="trigger.html#sweep_up">sweep_up()</a></em>, <em class="mono"><a href="trigger.html#sweep_down">sweep_down()</a></em>, <em class="mono"><a href="trigger.html#sweep_stop">sweep_stop()</a></em></p></div>
+
+	<p id="catch_sweep" class="function">catch_sweep (event, channel)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>event       </td><td>str </td><td>Event to catch: <em class="mono">'zerostop'</em>, <em class="mono">'min'</em>, <em class="mono">'max'</em>, <em class="mono">'min_posthold'</em>, <em class="mono">'max_posthold'</em></td></tr>
+		<tr><td>channel     </td><td>int </td><td>Index of virtual channel</td></tr>
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+ 	</table><p class="function-note"><i>effect: Wait until the specified event occurs while sweeping X<sub>channel</sub>.</i></p></div>
+
+	<p id="sweep_link" class="function">sweep_link (channel1, channel2)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>channel1    </td><td>int </td><td>Index of virtual channel to link</td></tr>
+		<tr><td>channel2    </td><td>int </td><td>Index of virtual channel to link</td></tr>
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+	</table><p class="function-note"><i>effect: Links sweeping of X<sub>channel1</sub> with sweeping of X<sub>channel2</sub> and vice versa - they will start and stop together.</i></p></div>
+
+	<p id="sweep_link_clear" class="function">sweep_link_clear ()</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>return value</td><td>bool </td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+	</table><p class="function-note"><i>effect: Unlinks all sweeps on the current panel.</i></p></div>
+
+	<p><em class="note">Note:</em>
+	Sweep linking is deprecated in favor of the more general method offered by <em class="mono">set_follower()</em>.</p>
+
+	<p id="set_follower" class="function">set_follower (leader, follower, expr)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>leader      </td><td>int </td><td>Index of <i>leader</i> virtual channel (must be invertible)</td></tr>
+		<tr><td>follower    </td><td>int </td><td>Index of <i>follower</i> virtual channel (must be invertible)</td></tr>
+		<tr><td>expr        </td><td>str </td><td>Python expression used to compute the follower target based on the leader value, as function of <em class="mono">x</em></td></tr>
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+	</table><p class="function-note"><i>effect: The follower channel will be set automatically whenever the leader channel is set. More information <a href="index.html#followers">here</a>.</i></p></div>
+
+	<p id="remove_follower" class="function">remove_follower (leader)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>leader      </td><td>int </td><td>Index of <i>leader</i> virtual channel</td></tr>
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+	</table></div>
+
+	<p id="show_followers" class="function">show_followers ()</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+	</table><p class="function-note"><i>effect: A list of leader-follower arrangements will be printed in the status area.</i></p></div>
+
+</div>
+
+<h3 id="scope_functions">Scope functions</h3>
+
+<div class="indent">
+
+	<p id="request_pulse" class="function">request_pulse (channel, target)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>channel     </td><td>int  </td><td>Index of virtual channel to pulse when (and if) scope fires, must be invertible</td></tr>
+		<tr><td>target      </td><td>float</td><td>Target value in scaled units (e.g. mV)</td></tr>
+		<tr><td>return value</td><td>bool </td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="trigger.html#request_pulse">request_pulse()</a></em></p></div>
+
+	<p id="cancel_pulse" class="function">cancel_pulse (channel)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>channel     </td><td>int </td><td>Index of virtual channel which should not be pulsed</td></tr>
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="trigger.html#cancel_pulse">cancel_pulse()</a></em></p></div>
+
+	<p id="fire_scope" class="function">fire_scope&nbsp;&nbsp; ()<br id="cancel_scope"/>cancel_scope ()</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="trigger.html#fire_scope">fire_scope()</a></em>, <em class="mono"><a href="trigger.html#cancel_scope">cancel_scope()</a></em></p></div>
+
+	<p id="fire_scope_pulse" class="function">fire_scope_pulse (channel, target)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>channel     </td><td>int  </td><td>Virtual channel to pulse, must be invertible</td></tr>
+		<tr><td>target      </td><td>float</td><td>Target value in scaled units (e.g. mV)</td></tr>
+		<tr><td>return value</td><td>bool </td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="trigger.html#fire_scope_pulse">fire_scope_pulse()</a></em></p></div>
+
+	<p><em class="note">Note:</em>
+	<em class="mono">fire_scope()</em> and <em class="mono">fire_scope_pulse()</em> return immediately, i.e. while the scope may still be scanning.</p>
+
+	<p id="catch_scan_start" class="function">catch_scan_start&nbsp; ()<br id="catch_scan_finish"/>catch_scan_finish ()</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+ 	</table><p class="function-note"><i>effect: Wait until scope starts or finishes (successfully or prematurely).</i></p></div>
+
+</div>
+
+<h3 id="trigger_functions">Trigger functions</h3>
+
+<div class="indent">
+
+	<p id="arm_trigger" class="function">arm_trigger&nbsp;&nbsp;&nbsp; (id)<br id="disarm_trigger"/>disarm_trigger (id)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>id          </td><td>int </td><td>Index of trigger to <em class="keyword">arm</em> or <em class="keyword">disarm</em>, range: 0 ... 7</td></tr>
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="trigger.html#arm_trigger">arm_trigger()</a></em>, <em class="mono"><a href="trigger.html#disarm_trigger">disarm_trigger()</a></em></p></div>
+
+	<p id="force_trigger" class="function">force_trigger&nbsp; (id)<br id="cancel_trigger"/>cancel_trigger (id)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>id          </td><td>int </td><td>Index of trigger to start (<em class="keyword">force</em>) or stop, range: 0 ... 7</td></tr>
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="trigger.html#force_trigger">force_trigger()</a></em>, <em class="mono"><a href="trigger.html#cancel_trigger">cancel_trigger()</a></em></p></div>
+
+	<p id="catch_signal" class="function">catch_signal (signal)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>signal      </td><td>str </td><td>Text <em class="keyword">signal</em> to catch</td></tr>
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+ 	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="trigger.html#emit_signal">emit_signal()</a></em></p></div>
+
+	<p><em class="note">Note:</em>
+	<em class="mono">catch_signal()</em> will not return until the specified signal is received.</p>
+
+</div>
+
+<h3 id="buffer_functions">Buffer functions</h3>
+
+<div class="indent">
+
+	<p id="new_set" class="function">new_set ()</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="trigger.html#new_set">new_set()</a></em></p></div>
+
+	<p id="t_zero" class="function">t_zero ()</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+	</table><p class="function-note"><i>effect: Reset the current panel timer</i><br/>
+	<i>see also:</i> <em class="mono"><a href="trigger.html#t_zero">t_zero()</a></em></p></div>
+
+	<p id="save_data" class="function">save_data (filename)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>filename    </td><td>str </td><td>Relative or absolute filename to which to save data (if already existing, data will be appended)</td></tr>
+		<tr><td>return value</td><td>bool</td><td><em class="mono">True</em> on success, <em class="mono">False</em> on failure</td></tr>
+	</table><p class="function-note"><i>see also:</i> <em class="mono"><a href="trigger.html#save_data">save_data()</a></em></p></div>
+
+	<p id="clear_buffer" class="function">clear_buffer (confirm, tzero)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>confirm     </td><td>bool</td><td>Whether to confirm clearing of unsaved data using a dialog box</td></tr>
+		<tr><td>tzero       </td><td>bool</td><td>Whether to simultaneously reset the panel timer</td></tr>
+		<tr><td>return value</td><td>str </td><td>Reply indicating whether the buffer was actually cleared</td></tr>
+	</table></div>
+
+</div>
+
+<h3 id="autosweep_functions">Autosweep functions</h3>
+
+<div class="indent">
+
+	<p id="megasweep_estimate" class="function">megasweep_estimate (sweep_ch, N_step)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>sweep_ch    </td><td>int  </td><td>Index of virtual channel to be swept</td></tr>
+		<tr><td>N_step      </td><td>int  </td><td>Proposed number of steps (sweeps)</td></tr>
+		<tr><td>return value</td><td>float</td><td>Estimated time in hours</td></tr>
+	</table><p class="function-note"><i>improved in version 0.81</i></p></div>
+
+	<p id="megasweep_up" class="function">megasweep_up&nbsp;&nbsp; (sweep_ch, step_ch, V_start, V_end, N_step, filename)<br id="megasweep_down"/>megasweep_down (sweep_ch, step_ch, V_start, V_end, N_step,  filename)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>sweep_ch    </td><td>int  </td><td>Index of virtual channel to sweep</td></tr>
+		<tr><td>step_ch     </td><td>int  </td><td>Index of virtual channel to step between sweeps</td></tr>
+		<tr><td>V_start     </td><td>float</td><td>Starting "voltage" for X<sub>step_ch</sub></td></tr>
+		<tr><td>V_end       </td><td>float</td><td>Ending "voltage" for X<sub>step_ch</sub></td></tr>
+		<tr><td>N_step      </td><td>int  </td><td>Number of segments between <em class="mono">V_start</em> and <em class="mono">V_end</em></td></tr>
+		<tr><td>filename    </td><td>str  </td><td>Relative or absolute filename to which to save data</td></tr>
+		<tr><td>return value</td><td>     </td><td>none</td></tr>
+	</table><p class="function-note"><i>effect: The sweep will be repeated N_step+1 times (to include both endpoints), saving data on either up or down sweeps</i></p></div>
+
+	<p id="minisweep_up" class="function">minisweep_up&nbsp;&nbsp; (sweep_ch, N_step, filename)<br id="minisweep_down"/>minisweep_down (sweep_ch, N_step, filename)</p>
+	<div class="indent"><table class="function with-rv">
+		<tr><td>sweep_ch    </td><td>int</td><td>Index of virtual channel to sweep</td></tr>
+		<tr><td>N_step      </td><td>int</td><td>Number of steps (sweeps)</td></tr>
+		<tr><td>filename    </td><td>str</td><td>Relative or absolute filename to which to save data</td></tr>
+		<tr><td>return value</td><td>   </td><td>none</td></tr>
+	</table><p class="function-note"><i>effect: The sweep will be repeated exactly N_step times, saving data on either up or down sweeps</i></p></div>
+
+</div>
+
+</td><td class="menu">
+	<p><a href="../index.html">Home</a></p>
+	<p><a href="index.html">Online manual</a></p>
+	<p class="mini-indent"><a href="channel.html">Channel&nbsp;func.</a></p>
+	<p class="mini-indent"><a href="trigger.html">Trigger&nbsp;func.</a></p>
+	<p class="mini-indent"><b>Terminal&nbsp;func.</b></p>
+	<p class="mini-indent"><a href="gpib.html">GPIB</a></p>
+	<p class="mini-indent"><a href="oldversion.html">Old version</a></p>
+	<p class="mini-indent"><a href="installed_files.html">Installed files</a></p>
+	<p><a href="../install.html">Installation</a></p>
+	<p><a href="../devel.html">Development</a></p>
+	<p><a href="../dl/">Downloads</a></p>
+</td></tr></table>
+
+<div id="footer"><p id="validate">W3C Validate [ <a href="http://validator.w3.org/check?uri=referer">XHTML</a> / <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> ]</p></div>
+
+</body>
+</html>

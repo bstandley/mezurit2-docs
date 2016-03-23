@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+	<link rel="stylesheet" type="text/css" href="../common.css"/>
+	<title>Mezurit 2 - Installed files</title>
+</head>
+
+<body>
+
+<div><img src="../logo.png" alt="Mezurit 2"/></div>
+<table id="page"><tr><td class="bar"></td><td class="content">
+
+<h2>Online documentation - Installed files</h2>
+
+<h4>Linux</h4>
+
+<div class="indent">
+
+	<table>
+		<tr><th>Purpose</th><th>Typical location</th><th>File (ver. 0.81+)</th><th>File (ver. 0.74)</th><th style="color: #666">Source (ver. 0.81+)</th></tr>
+		<tr class="first">
+			<td>System-wide default configuration</td>
+			<td><em class="mono">/usr/share/mezurit2/</em></td>
+			<td><em class="mono">default.mcf</em></td>
+			<td><em class="mono">default.mcf</em></td>
+			<td><em class="mono" style="color: #666">resource/default.mcf</em></td>
+		</tr>
+		<tr>
+			<td>System-wide channel and trigger functions <sup>1</sup></td>
+			<td><em class="mono">/usr/lib/mezurit2/</em></td>
+			<td><em class="mono">mezurit2compute.py</em></td>
+			<td><em class="mono">script.py</em></td>
+			<td><em class="mono" style="color: #666">src/main/setup/compute.py</em></td>
+		</tr>
+		<tr>
+			<td>System-wide terminal functions</td>
+			<td><em class="mono">/usr/lib/mezurit2/</em></td>
+			<td><em class="mono">mezurit2control.py</em></td>
+			<td><em class="mono">mezurit2remote.py</em></td>
+			<td><em class="mono" style="color: #666">src/control/client.py</em></td>
+		</tr>
+		<tr class="first">
+			<td>Per-user default configuration</td>
+			<td><em class="mono">~/.config/mezurit2/</em></td>
+			<td><em class="mono">default.mcf</em></td>
+			<td><em class="mono">default.mcf</em></td>
+			<td><span style="color: #666">(Generated at run-time.)</span></td>
+		</tr>
+		<tr>
+			<td>User-defined channel and trigger functions</td>
+			<td><em class="mono">~/.config/mezurit2/</em></td>
+			<td><em class="mono">compute.py</em></td>
+			<td></td>
+			<td><span style="color: #666">(Generated at run-time.)</span></td>
+		</tr>
+		<tr>
+			<td>User-defined terminal functions</td>
+			<td><em class="mono">~/.config/mezurit2/</em></td>
+			<td><em class="mono">terminal.py</em></td>
+			<td><em class="mono">shell.py</em></td>
+			<td><span style="color: #666">(Generated at run-time.)</span></td>
+		</tr>
+		<tr class="first">
+			<td>Offline manual</td>
+			<td><em class="mono">/usr/share/mezurit2/</em></td>
+			<td><em class="mono">manual-??.pdf</em></td>
+			<td><em class="mono">manual.pdf</em></td>
+			<td><em class="mono" style="color: #666">resource/manual-??.pdf</em></td>
+		</tr>
+		<tr>
+			<td>Example configurations</td>
+			<td><em class="mono">/usr/share/mezurit2/examples</em></td>
+			<td><em class="mono">*.mcf</em></td>
+			<td><em class="mono">*.mcf</em></td>
+			<td><em class="mono" style="color: #666">resource/examples/*.mcf</em></td>
+		</tr>
+		<tr>
+			<td>Images and icons</td>
+			<td><em class="mono">/usr/share/mezurit2/pixmaps</em></td>
+			<td><em class="mono">*.png</em></td>
+			<td><em class="mono">*.png</em></td>
+			<td><em class="mono" style="color: #666">resource/pixmaps/*.png</em></td>
+		</tr>
+		<tr>
+			<td>Themes</td>
+			<td><em class="mono">/usr/share/mezurit2/themes</em></td>
+			<td><em class="mono">gtkrc-*</em></td>
+			<td><em class="mono">gtkrc-*</em></td>
+			<td><em class="mono" style="color: #666">resource/themes/gtkrc-*</em></td>
+		</tr>
+		<tr class="first">
+			<td>Program executable</td>
+			<td><em class="mono">/usr/bin/</em></td>
+			<td><em class="mono">mezurit2</em></td>
+			<td><em class="mono">mezurit2</em></td>
+			<td><em class="mono" style="color: #666">src/main/main.c</em></td>
+		</tr>
+		<tr>
+			<td>Remote control Python module</td>
+			<td><em class="mono">/usr/lib/mezurit2/</em></td>
+			<td><em class="mono">_mezurit2control.so</em></td>
+			<td><em class="mono">_mezurit2remote.so</em></td>
+			<td><em class="mono" style="color: #666">src/control/client.c</em></td>
+		</tr>
+		<tr class="last">
+			<td>Python startup script for terminal</td>
+			<td><em class="mono">/usr/share/mezurit2/</em></td>
+			<td><em class="mono">terminal_startup.py</em></td>
+			<td></td>
+			<td><em class="mono" style="color: #666">resource/terminal_startup.py</em></td>
+		</tr>
+	</table>
+
+</div>
+
+<h4>Windows</h4>
+
+<div class="indent">
+
+	<table>
+		<tr><th>Purpose</th><th>Typical location (Win. 7)</th><th>File</th></tr>
+		<tr class="first">
+			<td>System-wide default configuration</td>
+			<td><em class="mono">Mezurit2\</em></td>
+			<td><em class="mono">default.mcf</em></td>
+		</tr>
+		<tr>
+			<td>System-wide channel and trigger functions</td>
+			<td><em class="mono">Mezurit2\</em></td>
+			<td><em class="mono">mezurit2compute.py</em></td>
+		</tr>
+		<tr>
+			<td>System-wide terminal functions</td>
+			<td><em class="mono">Mezurit2\</em></td>
+			<td><em class="mono">mezurit2control.py</em></td>
+		</tr>
+		<tr class="first">
+			<td>Per-user default configuration <sup>2</sup></td>
+			<td><em class="mono">C:\Users\{username}\AppData\Local\Mezurit2\</em></td>
+			<td><em class="mono">default.mcf</em></td>
+		</tr>
+		<tr>
+			<td>User-defined channel and trigger functions <sup>2</sup></td>
+			<td><em class="mono">C:\Users\{username}\AppData\Local\Mezurit2\</em></td>
+			<td><em class="mono">compute.py</em></td>
+		</tr>
+		<tr>
+			<td>User-defined terminal functions <sup>2</sup></td>
+			<td><em class="mono">C:\Users\{username}\AppData\Local\Mezurit2\</em></td>
+			<td><em class="mono">terminal.py</em></td>
+		</tr>
+		<tr class="first">
+			<td>Offline manual</td>
+			<td><em class="mono">Mezurit2\</em></td>
+			<td><em class="mono">manual-??.pdf</em></td>
+		</tr>
+		<tr>
+			<td>Example configurations</td>
+			<td><em class="mono">Mezurit2\examples</em></td>
+			<td><em class="mono">*.mcf</em></td>
+		</tr>
+		<tr>
+			<td>Images and icons</td>
+			<td><em class="mono">Mezurit2\pixmaps</em></td>
+			<td><em class="mono">*.png</em></td>
+		</tr>
+		<tr>
+			<td>Themes</td>
+			<td><em class="mono">Mezurit2\themes</em></td>
+			<td><em class="mono">gtkrc-*</em></td>
+		</tr>
+		<tr class="first">
+			<td>Program executable</td>
+			<td><em class="mono">Mezurit2\</em></td>
+			<td><em class="mono">Mezurit2.exe</em></td>
+		</tr>
+		<tr>
+			<td>Remote control Python module</td>
+			<td><em class="mono">Mezurit2\</em></td>
+			<td><em class="mono">_mezurit2control.pyd</em></td>
+		</tr>
+		<tr class="last">
+			<td>Python startup script for terminal</td>
+			<td><em class="mono">Mezurit2\</em></td>
+			<td><em class="mono">terminal_startup.py</em></td>
+		</tr>
+	</table>
+
+</div>
+
+<p><small><sup>1</sup> Typical location in version 0.74: <em class="mono">/usr/share/mezurit2/</em>.<br/>
+<sup>2</sup> Typical location on Windows XP: <em class="mono">C:\Documents and Settings\{username}\Local Settings\Application Data\Mezurit2\</em>.</small></p>
+
+</td><td class="menu">
+	<p><a href="../index.html">Home</a></p>
+	<p><a href="index.html">Online manual</a></p>
+	<p class="mini-indent"><a href="channel.html">Channel&nbsp;func.</a></p>
+	<p class="mini-indent"><a href="trigger.html">Trigger&nbsp;func.</a></p>
+	<p class="mini-indent"><a href="terminal.html">Terminal&nbsp;func.</a></p>
+	<p class="mini-indent"><a href="gpib.html">GPIB</a></p>
+	<p class="mini-indent"><a href="oldversion.html">Old version</a></p>
+	<p class="mini-indent"><b>Installed files</b></p>
+	<p><a href="../install.html">Installation</a></p>
+	<p><a href="../devel.html">Development</a></p>
+	<p><a href="../dl/">Downloads</a></p>
+</td></tr></table>
+
+<div id="footer"><p id="validate">W3C Validate [ <a href="http://validator.w3.org/check?uri=referer">XHTML</a> / <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> ]</p></div>
+
+</body>
+</html>

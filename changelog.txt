@@ -1,0 +1,41 @@
+0.80  [ 20 Oct 2011 ]
+
+- Replaced GtkNotebook with the "Page" menu to switch between setup and panel modes.
+- Much more . . .
+
+0.81  [ 17 Nov 2011 ]
+
+- Added gpib() terminal function.
+- Added check in xleep() terminal function to handle negative time intervals.
+- Fixed sweep MCF functions so that entries are visibly updated when modified through set_var().
+
+0.82  [ 26 Jan 2012 ]
+
+- Fixed spawn_terminal() to run the correct version of the python interpreter.
+- Added A8648_Ampl_V() channel function.
+- Windows version now uses pyreadline 1.7.1.
+- Updated default and example configs.
+
+0.83  [ 7 Feb 2012 ]
+
+- Console output is maintained on Windows when --debug command line option is given.
+- Fixed "GPIB Pause" function.
+- Made dummy-mode scan results more interesting.
+- Fixed logging when using NI DAQmx driver.
+- (Hopefully) debugged scope mode.
+
+0.84  [ 9 Feb 2012 ]
+
+- Fixed one major and a few minor memory leaks using valgrind.
+- Windows version now comes with GTK+ 2.24.10.
+
+0.90  [ 23 Feb 2012 ]
+
+- Released under GPL.
+- Minor improvements to About dialog.
+
+0.91  [ 11 Apr 2012 ]
+
+- Added delayed resizing to Acquisition tool, which prevents excessive size changes when values change sign or magnitude repeatedly.
+- Removed direct include of glib/gthread.h.
+- Disabled deprecated GTK functions.

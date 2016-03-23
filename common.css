@@ -1,0 +1,62 @@
+/* general */
+
+p { margin-top: 10px; }
+a { text-decoration: none; }
+img { margin: 2px; }
+img.in-text { vertical-align: text-bottom; }
+sup { vertical-align: text-top; }
+table { border-collapse: collapse; }
+tr.first { border-top: solid 1px black; }
+tr.last  { border-bottom: solid 1px black; }
+
+/* layout */
+
+body { margin: 6px 0px; font-family: serif; background-color: #141414; }
+#page { width: 100%; border-top: solid 2px #398DFF; border-bottom: solid 2px #398DFF; background-color: white; }
+#footer { padding: 0px 10px 10px 10px; color: #DDD; }
+
+#footer a { color: #398DFF; }
+#thanks { float: left; }
+#validate { float: right; }
+
+td.bar { background-color: #D0D0D0; width: 12px; padding: 0px; }
+td.content { padding: 10px 14px 10px 8px; }
+td.menu { background-color: #D0D0D0; padding: 6px 6px 10px 8px; vertical-align: top; min-width: 90px; }
+.menu p { margin-top: 4px; margin-bottom: 10px; line-height: 95%; }
+
+/* content */
+
+#page div.indent { margin-left: 20px; }
+#page .mini-indent { margin-left: 10px; }
+
+#page h2 { margin-bottom: 20px; }
+#page h4 { margin-bottom: 12px; }
+#page small { font-size: 95%; }
+#page th, td { text-align: left; padding-right: 12px; }
+
+#page p.example { margin-top: 18px; margin-bottom: 8px; }
+#page p.function { font-family: monospace; font-weight: bold; margin-top: 16px; margin-bottom: 10px; }
+#page p.function-note { margin-top: 4px; }
+#page td.greedy { width: 100%; }
+#page td.spacer { line-height: 8px; }
+#page td.dotdotdot { font-size: 80%; }
+#page #scr td { vertical-align: top; text-align: right; font-size: 80%; line-height: 90%; }
+
+#page table.columns td { vertical-align: top; }
+#page table.columns ul { margin-top: 0px; margin-bottom: 0px; }
+#page table.columns p { margin: 0px 14px 12px 10px; text-indent: -10px; }
+#page table.spaceout td { vertical-align: top; padding-top: 3px; padding-bottom: 4px; }
+#page table.function { width: 90%; }
+#page table.function tr { background-color: #D2DDFF; }
+#page table.with-rv tr:last-of-type { background-color: #E5E0FF; }
+#page table.function td { border: solid 1px #AAA; padding-left: 8px; }
+#page table.function td:first-of-type { font-family: monospace; width: 100px; font-weight: bold; }
+#page table.with-rv tr:last-of-type td:first-of-type { font-weight: normal; font-style: italic; }
+#page table.function td:nth-of-type(2) { font-family: monospace; width: 40px; }
+
+#page em.keyword { font-style: normal; color: #700000; }
+#page em.tool { /* default italics are fine */ }
+#page em.mono { font-style: normal; font-family: monospace; white-space: nowrap; padding-right: 1px; }
+#page em.cmd  { font-style: normal; font-family: monospace; white-space: nowrap; color: #007000; }
+#page em.note { font-weight: bold; }
+#page em.warning { font-weight: bold; color: #CD7800; }

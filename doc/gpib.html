@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+	<link rel="stylesheet" type="text/css" href="../common.css"/>
+	<title>Mezurit 2 - GPIB</title>
+</head>
+
+<body>
+
+<div><img src="../logo.png" alt="Mezurit 2"/></div>
+<table id="page"><tr><td class="bar"></td><td class="content">
+
+<h2>Online documentation - GPIB</h2>
+
+<p>GPIB messages can be sent and received through <a href="channel.html#gpib">channel functions</a> or the <em class="mono"><a href="terminal.html#gpib">gpib()</a></em> <em class="keyword">terminal function</em> (version 0.81+).
+The former method works best when the purpose of the communication is to get or set an instrument parameter which can be stored locally as a floating-point value.
+The latter method can be used for any purpose because it is up to the user to format the message and interpret the reply.</p>
+
+<h3 id="channel_functions">Channel functions</h3>
+
+<div class="indent">
+
+	<p>Instrument parameters can be accessed via GPIB by placing a call to a pre-defined channel function in a virtual channel definition.
+	During the <em class="keyword">parsing phase</em> a <em class="keyword">gpib slot</em> is created for each board/address combination mentioned in the channel definitions.
+	The resulting set of gpib slots is read continuously in <em class="keyword">panel mode</em>, assuming GPIB is not paused.
+	GPIB channel functions are defined using the following function:</p>
+
+	<div class="indent">
+		<p id="GPIB_Device" class="function">GPIB_Device (read_str, read_period, dummy_value, reply_fmt, write_fmt)</p>
+		<div class="indent"><table class="function with-rv">
+			<tr><td>read_str    </td><td>str  </td><td>GPIB command needed to get (read) the parameter</td></tr>
+			<tr><td>read_period </td><td>float</td><td>Time between updates in seconds</td></tr>
+			<tr><td>dummy_value </td><td>float</td><td>Value to return in <em class="keyword">dummy mode</em></td></tr>
+			<tr><td>reply_fmt   </td><td>str  </td><td>C printf-style format needed to convert a reply to a floating point value</td></tr>
+			<tr><td>write_fmt   </td><td>str  </td><td>C printf-style format needed to set the parameter (supply empty string if N/A)</td></tr>
+			<tr><td>return value</td><td>     </td><td>Callable instance of the <em class="mono">GPIB_Device</em> class</td></tr>
+		</table></div>
+	</div>
+
+	<p>Since version 0.81, users can create new their own functions by placing calls to <em class="mono">GPIB_Device()</em> in <em class="mono">~/.config/mezurit2/compute.py</em> (see <a href="installed_files.html">Installed files</a>).</p>
+
+	<div class="indent">
+		<p class="example"><b>Example: SRS lock-in amplifier</b></p>
+		<div class="indent"><table class="spaceout">
+			<tr>
+				<td><i>Code:</i></td>
+				<td><em class="mono">SR830_SineOut = GPIB_Device('SLVL?', 0.5, 50e-3, '%lf', 'SLVL%f')</em></td>
+			</tr>
+			<tr>
+				<td><i>Channel&nbsp;def.:</i></td>
+				<td>X<sub>1</sub> (mV) = <em class="mono">SR830_SineOut(0, 8)</em></td>
+			</tr>
+			<tr>
+				<td><i>Result:</i></td>
+				<td>During the <em class="keyword">parsing phase</em> Mezurit 2 will create a <em class="keyword">gpib slot</em> for board 0, address 8.
+				In <em class="keyword">panel mode</em> it will query the device with the command <em class="mono">"SLVL?"</em> every 0.5&nbsp;seconds and decode the reply (e.g. <em class="mono">"0.075"</em>) as a floating point value 7.5e-2 (displayed as 75&nbsp;mV).
+				If the user were to set X<sub>1</sub> to some value (e.g. 80&nbsp;mV), Mezurit 2 would immediately send <em class="mono">"SLVL0.080000"</em> to the amplifier, then resume reading every 0.5&nbsp;seconds.</td>
+			</tr>
+		</table></div>
+	</div>
+
+	<p><em class="note">Technical detail:</em>
+	When <em class="mono"><b>read_period</b></em> is much slower than the DAQ rate (which is usually the case), a gpib slot will return the value obtained by the last read operation rather than waiting for a "fresh" value.
+	When a slot has been written more recently than it has been read, <i>it will return the last written value</i>, in effect assuming that the write operation succeeded.
+	This behavior allows smooth high-speed sweeps over GPIB with out bogging down the system (and the instrument) with unnecessary reads during idle periods.</p>
+
+	<p>Functions created with <em class="mono">GPIB_Device</em> have several additional default parameters which can be modified if necessary: <em class="mono">self.eos</em> to set the end-of-string byte (default: 0x0), <em class="mono">self.intro</em> to set the identification query (default: <em class="mono">"*IDN?"</em>), and <em class="mono">self.inverse_fn</em> and <em class="mono">self.noninverse_fn</em> to provide an additional layer of abstraction, explained below.</p>
+
+	<div class="indent">
+		<p class="example"><b>Example: Oxford temperature controller</b></p>
+		<div class="indent"><table class="spaceout">
+			<tr>
+				<td><i>Code:</i></td>
+				<td><em class="mono">ITC503_Temp = GPIB_Device('R1\r', 1.0, 300, 'R%lf', '')<br/>
+				ITC503_Temp.eos = 0x400 | 0xd<br/>
+				ITC503_Temp.intro = 'V\r'</em></td>
+			</tr>
+			<tr>
+				<td><i>Result:</i></td>
+				<td>GPIB slots created by calling the <em class="mono">ITC503_Temp()</em> channel function will use a custom end-of-string byte and identification command.</td>
+			</tr>
+		</table></div>
+	</div>
+
+	<p>Members <em class="mono">self.inverse_fn</em> and <em class="mono">self.noninverse_fn</em> are useful when a GPIB command expects values in undesirable units.
+	Function <em class="mono">self.noninverse_fn</em> is applied to the value read via GPIB and <em class="mono">self.inverse_fn</em> is applied to a value to be sent over GPIB.
+	The default for both is to do nothing, i.e. the unity function <em class="mono">lambda&nbsp;x&nbsp;:&nbsp;x</em>.</p>
+
+	<div class="indent">
+		<p class="example"><b>Example: Agilent signal generator</b></p>
+		<div class="indent"><table class="spaceout">
+			<tr>
+				<td><i>Code:</i></td>
+				<td><em class="mono">A8648_Ampl = GPIB_Device('POW:AMPL?', 0.5, 0.0, '%lf', 'POW:AMPL %1.6f MV')<br/>
+				A8648_Ampl.noninverse_fn = lambda x_dBm : 10 ** (x_dBm / 10)<br/>
+				A8648_Ampl.inverse_fn = lambda x_mV  : x_mV * 1e3</em></td>
+			</tr>
+			<tr>
+				<td><i>Result:</i></td>
+				<td>GPIB slots created by calling the <em class="mono">A8648_Ampl()</em> channel function will handle values in Volts while internally getting values from the source in dBm and setting values in mV.
+				Note that the default value should match the units of the internal reading command - in this case dBm.</td>
+			</tr>
+		</table></div>
+	</div>
+
+	<p>These functions are also useful for implementing lookup tables, especially when combined with the <em class="mono">nearest_index()</em> function (version 0.81+) detailed below.
+	For an example, see the definition of <em class="mono">SR830_Tau()</em> in <em class="mono"><a href="compute_example.py">compute_example.py</a></em> (for version 0.74, see <em class="mono"><a href="script_example.py">script_example.py</a></em>).</p>
+
+	<div class="indent">
+		<p id="nearest_index" class="function">nearest_index (list, target)</p>
+		<div class="indent"><table class="function with-rv">
+			<tr><td>list        </td><td>[]   </td><td>Pre-sorted (ascending) list containing the valid values</td></tr>
+			<tr><td>target      </td><td>float</td><td>Target value</td></tr>
+			<tr><td>return value</td><td>int  </td><td>Index of the closest valid value</td></tr>
+		</table></div>
+	</div>
+
+	<p><em class="warning">Important:</em>
+	The syntax used to define GPIB channel functions in version 0.74 is slightly different from that described above, and <em class="mono">self.inverse_fn</em> and <em class="mono">self.noninverse_fn</em> are not available.
+	More information is available <a href="oldversion.html#gpib">here</a>.</p>
+
+</div>
+
+<h3>Terminal function (ver. 0.81+)</h3>
+
+<div class="indent">
+
+	<p>Plain text GPIB commands can be sent directly from the terminal using the <em class="mono"><a href="terminal.html#gpib">gpib()</a></em> function.
+	This function also accepts two optional arguments <em class="mono">eos</em> and <em class="mono">expect_reply</em> which are described in its <a href="terminal.html#gpib">documentation</a>.</p>
+
+	<div class="indent">
+		<p class="example"><b>Example: Agilent signal generator</b></p>
+		<div class="indent"><table class="spaceout">
+			<tr>
+				<td><i>Command:</i></td>
+				<td><em class="cmd">gpib(1, 18, 'CW:FREQ 100 MHZ')</em></td>
+			</tr>
+			<tr>
+				<td><i>Result:</i></td>
+				<td>The message <em class="mono">"CW:FREQ 100 MHZ"</em> will be sent to the instrument with address 18 using board 1.
+				The reply (if there is one) will be returned as a string.</td>
+			</tr>
+		</table></div>
+	</div>
+
+</div>
+
+</td><td class="menu">
+	<p><a href="../index.html">Home</a></p>
+	<p><a href="index.html">Online manual</a></p>
+	<p class="mini-indent"><a href="channel.html">Channel&nbsp;func.</a></p>
+	<p class="mini-indent"><a href="trigger.html">Trigger&nbsp;func.</a></p>
+	<p class="mini-indent"><a href="terminal.html">Terminal&nbsp;func.</a></p>
+	<p class="mini-indent"><b>GPIB</b></p>
+	<p class="mini-indent"><a href="oldversion.html">Old version</a></p>
+	<p class="mini-indent"><a href="installed_files.html">Installed files</a></p>
+	<p><a href="../install.html">Installation</a></p>
+	<p><a href="../devel.html">Development</a></p>
+	<p><a href="../dl/">Downloads</a></p>
+</td></tr></table>
+
+<div id="footer"><p id="validate">W3C Validate [ <a href="http://validator.w3.org/check?uri=referer">XHTML</a> / <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> ]</p></div>
+
+</body>
+</html>

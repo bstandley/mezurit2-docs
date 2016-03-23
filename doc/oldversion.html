@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+	<link rel="stylesheet" type="text/css" href="../common.css"/>
+	<title>Mezurit 2 - Differences in version 0.74</title>
+</head>
+
+<body>
+
+<div><img src="../logo.png" alt="Mezurit 2"/></div>
+<table id="page"><tr><td class="bar"></td><td class="content">
+
+<h2>Online documentation - Differences in version 0.74</h2>
+
+<h3 id="gpib">GPIB</h3>
+
+<div class="indent">
+
+	<p>Version 0.74 does not support adding user-defined <em class="keyword">compute functions</em>, but they can still be added by directly modifying <em class="mono">/usr/share/mezurit2/script.py</em>.
+	The GPIB_Device class takes slightly different arguments and is also not directly callable.
+	Instead, one must store its return value in an intermediate variable, then define a channel function which calls the <em class="mono">self.read</em> method.
+	In addition, a call to <em class="mono">self.reset</em> must be added to <em class="mono">reset_gpib()</em> (in newer versions this happens automatically).
+	The modified syntax is described below, along with an example:</p>
+
+	<div class="indent">
+		<p id="GPIB_Device" class="function">GPIB_Device (read_period, intro_str, read_str, reply_fmt, write_fmt)</p>
+		<div class="indent"><table class="function with-rv">
+			<tr><td>read_period </td><td>float</td><td>Time between updates in seconds</td></tr>
+			<tr><td>intro_str   </td><td>str  </td><td>GPIB command needed to query the model name (normally <em class="mono">"*IDN?"</em>)</td></tr>
+			<tr><td>read_str    </td><td>str  </td><td>GPIB command needed to get (read) the parameter</td></tr>
+			<tr><td>reply_fmt   </td><td>str  </td><td>C printf-style format needed to convert a reply to a floating point value</td></tr>
+			<tr><td>write_fmt   </td><td>str  </td><td>C printf-style format needed to set the parameter (supply empty string if N/A)</td></tr>
+			<tr><td>return value</td><td>     </td><td>Instance of the <em class="mono">GPIB_Device</em> class</td></tr>
+		</table></div>
+	</div>
+
+	<div class="indent">
+		<p class="example"><b>Example: Agilent signal generator</b></p>
+		<div class="indent"><table class="spaceout">
+			<tr>
+				<td><i>Code:</i></td>
+				<td><em class="mono">Agilent_8648_FREQ = GPIB_Device(0.5, "*IDN?", "FREQ:CW?", "%lf", "FREQ:CW %1.8le HZ")<br/>
+				def A8648_Freq (brd, pad) : return Agilent_8648_FREQ.read(brd, pad)<br/>
+				def reset_gpib () :<br/>
+				&nbsp;&nbsp;&nbsp;Agilent_8648_FREQ.reset()<br/>
+				&nbsp;&nbsp;&nbsp;...</em></td>
+			</tr>
+			<tr>
+				<td><i>Channel&nbsp;def.:</i></td>
+				<td>X<sub>1</sub> (MHz) = <em class="mono">A8648_Freq(0, 18)</em></td>
+			</tr>
+			<tr>
+				<td><i>Result:</i></td>
+				<td>During the <em class="keyword">parse phase</em> Mezurit 2 will create a <em class="keyword">gpib slot</em> for board 0, address 18.
+				In <em class="keyword">panel mode</em> it will query the device with the command <em class="mono">"FREQ:CW?"</em> every 0.5&nbsp;seconds and decode the reply (e.g. <em class="mono">"1.000000E+8"</em>) as a floating point value 100e6 (displayed as 100&nbsp;MHz).
+				If the user were to set X<sub>1</sub> to some value (e.g. 95&nbsp;MHz), Mezurit 2 would immediately send <em class="mono">"FREQ:CW 9.500000E+7 HZ"</em> to the instrument, then resume reading every 0.5&nbsp;seconds.</td>
+			</tr>
+		</table></div>
+	</div>
+
+	<p>The parameters <em class="mono">self.inverse_fn</em> and <em class="mono">self.noninverse_fn</em> are not present in version 0.74.
+	However, the functionality of the latter can be obtained by placing the desired expression in the channel function, as is done for <em class="mono">SR830_SensIn()</em> in <em class="mono">/usr/share/mezurit2/script.py</em>.</p>
+
+</div>
+
+</td><td class="menu">
+	<p><a href="../index.html">Home</a></p>
+	<p><a href="index.html">Online manual</a></p>
+	<p class="mini-indent"><a href="channel.html">Channel&nbsp;func.</a></p>
+	<p class="mini-indent"><a href="trigger.html">Trigger&nbsp;func.</a></p>
+	<p class="mini-indent"><a href="terminal.html">Terminal&nbsp;func.</a></p>
+	<p class="mini-indent"><a href="gpib.html">GPIB</a></p>
+	<p class="mini-indent"><b>Old version</b></p>
+	<p class="mini-indent"><a href="installed_files.html">Installed files</a></p>
+	<p><a href="../install.html">Installation</a></p>
+	<p><a href="../devel.html">Development</a></p>
+	<p><a href="../dl/">Downloads</a></p>
+</td></tr></table>
+
+<div id="footer"><p id="validate">W3C Validate [ <a href="http://validator.w3.org/check?uri=referer">XHTML</a> / <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> ]</p></div>
+
+</body>
+</html>

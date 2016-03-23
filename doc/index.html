@@ -1,0 +1,435 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+	<link rel="stylesheet" type="text/css" href="../common.css"/>
+	<title>Mezurit 2 - Online documentation</title>
+</head>
+
+<body>
+
+<div><img src="../logo.png" alt="Mezurit 2"/></div>
+<table id="page"><tr><td class="bar"></td><td class="content">
+
+<h2>Online documentation</h2>
+
+<p>This manual is also available in <a href="manual.pdf">PDF</a> format for offline viewing.</p>
+
+<p><i>Warning:</i> Both this page and the offline manual are quite . . . <i>incomplete</i>.</p>
+
+<h3>Table of Contents</h3>
+
+<div class="indent"><table class="columns"><tr>
+	<td><p>&bull; <a href="#introduction">Introduction</a><br/>
+	&#8627; <small><a href="#modes">Modes</a></small><br/>
+	&#8627; <small><a href="#threads">Threads</a></small><br/>
+	&#8627; <small><a href="#definitions">Definitions</a></small></p>
+	<p>&bull; <a href="#hardware_and_virtual_channel_setup">Hardware and virtual channel setup</a><br/>
+	&#8627; <small><a href="#daq_hardware">DAQ Hardware</a></small><br/>
+	&#8627; <small><a href="#gpib_hardware">GPIB Hardware</a></small><br/>
+	&#8627; <small><a href="#virtual_channels">Virtual Channels</a></small></p></td>
+	<td><p>&bull; <a href="#panel_tools">Panel tools</a><br/>
+	&#8627; <small><a href="#acquisition">Acquisition</a></small><br/>
+	&#8627; <small><a href="#dac_controls">DAC Controls</a></small><br/>
+	&#8627; <small><a href="#scope">Scope</a></small><br/>
+	&#8627; <small><a href="#triggers">Triggers</a></small></p>
+	<p>&bull; <a href="#plotting_and_buffer_management">Plotting and buffer management</a><br/>
+	&#8627; <small><a href="#popup_menus">Popup menus</a></small><br/>
+	&#8627; <small><a href="#file_chooser">File chooser</a></small></p></td>
+	<td><p>&bull; <a href="#terminal">Terminal</a><br/>
+	&#8627; <small><a href="#user-defined_functions">User-defined functions</a></small><br/>
+	&#8627; <small><a href="#scripts">Scripts</a></small><br/>
+	&#8627; <small><a href="#synchronization">Synchronization</a></small></p></td>
+</tr></table></div>
+
+<h3 id="introduction">Introduction</h3>
+
+<div class="indent">
+
+	<h4>Special formatting</h4>
+
+	<p>Font type and color is used in this documentation to clarify and highlight some elements:</p>
+
+	<div class="indent">
+		<table>
+			<tr><th>Class</th><th>Example</th></tr>
+			<tr class="first">
+				<td>Keywords<sup>*</sup> associated with recurring concepts (defined <a href="#definitions">below</a>)</td>
+				<td><em class="keyword">compute function</em></td>
+			</tr>
+			<tr>
+				<td>Names of virtual instruments (called "tools" herein) or other sections of the GUI</td>
+				<td><em class="tool">scope</em></td>
+			</tr>
+			<tr>
+				<td>Function names, function definitions, and filenames</td>
+				<td><em class="mono">ADC(0,2)*1e-5</em></td>
+			</tr>
+			<tr>
+				<td><em class="tool">Terminal</em> and Unix shell commands</td>
+				<td><em class="cmd">set_dac(1, 0.0)</em></td>
+			</tr>
+			<tr>
+				<td>Notes, tips, and technical details</td>
+				<td><em class="note">Note:</em> ...</td>
+			</tr>
+			<tr class="last">
+				<td>Warnings or important information</td>
+				<td><em class="warning">Warning:</em> ...</td>
+			</tr>
+		</table>
+		<div style="max-width: 700px;"><small><sup>*</sup> These are a bit generic as jargon goes, so the highlighting is used to indicate the specific definition.
+		Neal Stephenson's writing notwithstanding, this approach seems preferable to making up words like <i>wafflesnorker</i> or <i>spweeble mode</i> to describe various aspects of the software.</small></div>
+	</div>
+
+	<h4 id="modes">Modes</h4>
+
+	<p>Mezurit 2 starts in <em class="keyword">setup mode</em>, which allows the user to configure DAQ and GPIB hardware and define <em class="keyword">virtual channels</em> to be acquired and recorded.
+	The <em class="tool">terminal</em> is works in <em class="keyword">setup mode</em>, but is limited to certain functions.
+	When switching to <em class="keyword">panel mode</em> Mezurit 2 completes the <em class="keyword">parsing phase</em>, during which it parses the channel definitions and generates a list of <em class="keyword">physical channels</em> and <em class="keyword">gpib slots</em> to be measured.
+	The <em class="keyword">parsing phase</em> occurs each time Mezurit 2 switches from <em class="keyword">setup mode</em> to <em class="keyword">panel mode</em> or between panels.</p>
+
+	<p>The <em class="tool">terminal</em> is implemented as an instance of the Python interpreter running in a separate process from Mezurit 2 proper.
+	Therefore, functions and variables defined in the <em class="keyword">terminal</em> cannot be accessed by <em class="keyword">compute functions</em> and vice versa.
+	One advantage of this approach is that the <em class="keyword">terminal</em> can hang, crash, or restart without affecting the time-sensitive data acquisition process.</p>
+
+	<h4 id="threads">Threads</h4>
+
+	<p>Mezurit 2 runs three threads in <em class="keyword">panel mode</em>, not counting the <em class="tool">terminal</em> process:</p>
+
+	<div class="indent"><table>
+		<tr><th>Thread</th><th>Loop rate</th><th>Job</th></tr>
+		<tr class="first">
+			<td>GUI</td><td>~120 Hz</td>
+			<td>Handles mouse clicks, key presses and updates the graphical interface. The only running thread in <em class="keyword">setup mode</em>.</td>
+		</tr>
+		<tr>
+			<td>DAQ</td><td>0.1-10 kHz</td>
+			<td>Runs data acquisition, sweeps, triggers, and records data.</td>
+			</tr>
+		<tr class="last">
+			<td>GPIB</td><td>50 Hz</td>
+			<td>Sends GPIB commands, waits, receives and scans replies.</td>
+		</tr>
+	</table></div>
+
+	<h4 id="definitions">Keyword definitions</h4>
+
+	<div class="indent">
+		<table>
+			<tr><th>Keyword</th><th>Definition</th></tr>
+			<tr class="first">
+				<td>virtual channel</td>
+				<td>A quantity defined by an arbitrary function of zero or more physical channels or other parameters, often corresponding to a physical quantity present in the device under test or elsewhere in the experiment.</td>
+			</tr>
+
+	<!--<ul>
+		<li><em class="keyword">setup mode</em>: . . .</li>
+		<li><em class="keyword">panel mode</em>: . . .</li>
+		<li><em class="keyword">parsing phase</em>: . . .</li>
+		<li><em class="keyword">virtual channel</em>: . . .</li>
+		<li><em class="keyword">trigger test</em>: . . .</li>
+		<li><em class="keyword">compute function</em>: . . .</li>
+		<li><em class="keyword">channel function</em>: . . .</li>
+		<li><em class="keyword">trigger function</em>: . . .</li>
+		<li><em class="keyword">terminal function</em>: . . .</li>
+		<li><em class="keyword">gpib slot</em>: . . .</li>
+		<li><em class="keyword">dummy mode</em>: . . .</li>
+		<li><em class="keyword">follower</em>: . . .</li>
+		<li><em class="keyword">sweep</em>: . . .</li>
+	</ul>-->
+
+</div>
+
+<h3 id="hardware_and_virtual_channel_setup">Hardware and virtual channel setup</h3>
+
+<div class="indent">
+
+	<h4 id="daq_hardware"><img class="in-text" src="icon_hardware.png" alt=""/>DAQ Hardware</h4>
+
+	<p>Coming soon . . .</p>
+
+	<h4 id="gpib_hardware"><img class="in-text" src="icon_hardware.png" alt=""/>GPIB Hardware</h4>
+
+	<p>Coming soon . . .</p>
+
+	<h4 id="virtual_channels"><img class="in-text" src="icon_channels.png" alt=""/>Virtual Channels</h4>
+
+	<p>The standard <em class="keyword">channel functions</em> are defined in <em class="mono"><a href="installed_files.html">/usr/lib/mezurit2/mezurit2compute.py</a></em>.
+	This script imports low-level built-in channel functions as well as the standard Python math module, which includes <em class="mono">sin()</em>, <em class="mono">cos()</em>, etc.
+	All of the standard channel functions are documented <a href="channel.html">here</a>.</p>
+
+	<p>Since version 0.81 user-defined functions can be added to <em class="mono">~/.config/mezurit2/compute.py</em> (or equivalent, see <a href="installed_files.html">Installed files</a>).
+	This allows the user to add specific convenience functions, or to quickly add GPIB support for a new instrument, as described <a href="gpib.html#channel_functions">here</a>.</p>
+
+	<p><em class="note">Technical detail:</em>
+	All relevant channel functions must be evaluated at least once during the parsing phase to generate a complete set of physical channels and gpib slots.
+	Thus, it is best not to use conditional statements e.g. <em class="mono">"ADC(0,2) if time() &gt; 10 else ADC(0,3)"</em> in channel definitions.</p>
+
+	<p><em class="note">Even more technical detail:</em>
+	Actually, Mezurit 2 can dynamically add physical channels and gpib slots after the parsing phase as they become relevant.
+	However, such physical channels and gpib slots will not be reflected in the sanity check strings shown in the GUI.
+	In addition, dynamically adding gpib slots has not been tested and may cause instability.</p>
+
+</div>
+
+<h3 id="panel_tools">Panel tools</h3>
+
+<div class="indent">
+
+	<h4 id="acquisition"><img class="in-text" src="icon_acquisition.png" alt=""/>Acquisition</h4>
+
+	<p>Coming soon . . .</p>
+
+	<h4 id="dac_controls"><img class="in-text" src="icon_sweep.png" alt=""/>DAC Controls</h4>
+
+	<p>Coming soon . . .</p>
+
+	<p id="followers">More than one output can be set at the same time using <em class="keyword">followers</em> (see <em class="mono"><a href="terminal.html#set_follower">set_follower()</a></em>).
+	When one channel is set to follow another channel, they are both updated on the same "tick" of the DAQ loop so there is minimal time delay.
+	Followers work no matter what method is used to set the leader channel - sweeping, the "SET" button, or <em class="mono"><a href="terminal.html#set_dac">set_dac()</a></em>.
+	The user may supply a (possibly complicated) expression to tell Mezurit 2 how to compute the follower's target value.
+	More than two channels can be linked by setting a third channel to "follow the follower," although care should taking to avoid any circular arrangements which could lead to undefined behavior (i.e. an infinite loop).</p>
+
+	<div class="indent">
+		<p class="example"><b>Example: Dual gates with differing efficiencies</b></p>
+		<div class="indent"><table class="spaceout">
+			<tr>
+				<td><i>Channels:</i></td>
+				<td>&#8942;<br/>
+				X<sub>1</sub> = <em class="mono">DAC(0, 0)</em><br/>
+				X<sub>2</sub> = <em class="mono">DAC(0, 1)</em><br/>
+				&#8942;</td>
+			</tr>
+			<tr>
+				<td><i>Command:</i></td>
+				<td><em class="cmd">set_follower(1, 2, '-3.0 * x')<br/>
+				show_followers()</em></td>
+			</tr>
+			<tr>
+				<td><i>Status:</i></td>
+				<td>X2 = f(X1), f(x) = -3.0 * x, Valid? Y</td>
+			</tr>
+			<tr>
+				<td><i>Result:</i></td>
+				<td>When gate voltage X<sub>1</sub> is set to, e.g. 2.5 V, gate voltage X<sub>2</sub> will be automatically set to -7.5V.
+				For certain device geometries, this setup could be used to vary the lateral electric field while maintaining constant doping.</td>
+			</tr>
+		</table></div>
+	</div>
+
+	<h4 id="scope"><img class="in-text" src="icon_timescale.png" alt=""/>Scope</h4>
+
+	<p>Coming soon . . .</p>
+
+	<h4 id="triggers"><img class="in-text" src="icon_trigger.png" alt=""/>Triggers</h4>
+
+	<p><em class="tool">Triggers</em> are used to promptly preform actions, defined by calls to <em class="keyword">trigger functions</em>, in response to an arbitrary event, defined by a <em class="keyword">trigger test</em>.
+	For example, one could automatically start a scope scan when a +5V TTL sync signal is received.</p>
+
+	<p><em class="tool">Triggers</em> must be "armed" before they become active, either by clicking the "ARM" button or calling the <em class="mono"><a href="terminal.html#arm_trigger">arm_trigger()</a></em> terminal function or the <em class="mono"><a href="trigger.html#arm_trigger">arm_trigger()</a></em> trigger function.
+	(The last method is useful for multi-stage events or to simply self-rearm.)</p>
+
+	<p>To set up a trigger, first define a <em class="keyword">trigger test</em> in an "IF:" entry box.
+	A trigger test must be a boolean expression constructed from a subset of the <em class="keyword">channel functions</em> (typically <em class="mono"><a href="channel.html#time">time()</a></em> or <em class="mono"><a href="channel.html#ch">ch()</a></em>).
+	Next, define one or more (max 8) trigger functions in the entry boxes immediately below (next to the <img class="in-text" src="force_button.png" alt="force"/> button).
+	Additional boxes can be made visible by clicking the "+" button.
+	When the trigger is armed, this test expression will be evaluated every on every iteration of the DAQ loop.
+	If and when it evaluates as <em class="mono">True</em>, Mezurit 2 will execute the trigger functions in order until one returns <em class="mono">False</em> or it reaches the end of the list.</p>
+
+	<p><em class="note">Note:</em> To define a trigger which executes immediately upon arming, simply supply <em class="mono">True</em> as the test.</p>
+
+	<p>Trigger functions are defined in <em class="mono"><a href="installed_files.html">/usr/lib/mezurit2/mezurit2compute.py</a></em>.
+	The standard trigger functions are documented <a href="trigger.html">here</a>.
+	While in principle is it possible to define new trigger functions in <em class="mono">~/.config/mezurit2/compute.py</em>, this is not recommended because the trigger tool is designed to execute only one function per line.
+	In addition, because trigger functions execute in the DAQ thread, any hangups or errors in a trigger function could negatively affect the data acquisition process.
+	The preferred way to execute more complex operations during a trigger event is to send a signal using <em class="mono"><a href="trigger.html#emit_signal">emit_signal()</a></em> to be caught by a <em class="keyword">terminal</em> script using <em class="mono"><a href="terminal.html#catch_signal">catch_signal()</a></em>.</p>
+
+	<div class="indent">
+		<p class="example"><b>Example: Oscilloscope-like operation</b></p>
+		<div class="indent"><table class="spaceout">
+			<tr>
+				<td><i>If:</i></td>
+				<td><em class="mono">ch(4) &gt; 2.5</em></td>
+			</tr>
+			<tr>
+				<td><i>Then:</i></td>
+				<td><em class="mono">fire_scope()<br/>
+				wait(0.1)<br/>
+				arm_trigger(0)</em></td>
+			</tr>
+			<tr>
+				<td><i>Result:</i></td>
+				<td>The scope will begin a scan when a sync signal represented by X<sub>4</sub> rises above 2.5 V.
+				The trigger will then rearm itself so that the data is refreshed every 0.1 seconds (assuming the scope is configured to scan for &lt;0.1 seconds).</td>
+			</tr>
+		</table></div>
+	</div>
+
+	<p>Triggers can be also be started manually ("forced") by clicking the <img class="in-text" src="force_button.png" alt="force"/> button or calling the <em class="mono"><a href="terminal.html#force_trigger">force_trigger()</a></em> terminal function or the <em class="mono"><a href="trigger.html#force_trigger">force_trigger()</a></em> trigger function.</p>
+
+</div>
+
+<h3 id="plotting_and_buffer_management">Plotting and buffer management</h3>
+
+<div class="indent">
+
+	<h4 id="popup_menus">Popup menus</h4>
+
+	<p>Coming soon . . .</p>
+
+	<h4 id="file_chooser">File chooser</h4>
+
+	<p>Coming soon . . .</p>
+
+</div>
+
+<h3 id="terminal">Terminal</h3>
+
+<div class="indent">
+
+	<p>The <em class="tool">terminal</em> provides a Python-based interface to Mezurit 2.
+	Almost all aspects of the GUI can be controlled from the terminal, plus several "hidden" features only accessible from the terminal.
+	In addition, all settings can be queried and modified using the <em class="mono"><a href="terminal.html#get_var">get_var()</a></em> and <em class="mono"><a href="terminal.html#set_var">set_var()</a></em> commands.
+	The "key=value" syntax for these two functions matches that used in Mezurit 2's configuration files.</p>
+
+	<div class="indent">
+		<p class="example"><b>Example: Increase sweep rate by 10%</b></p>
+		<div class="indent"><table class="spaceout">
+			<tr>
+				<td><i>Commands:</i></td>
+				<td><em class="cmd">val = get_var('panel0_sweep1_rate_up')<br/>
+				set_var('panel0_sweep1_rate_up={0:f}'.format(float(val) * 1.1))</em></td>
+			</tr>
+			<tr>
+				<td><i>Result:</i></td>
+				<td>The first command returns the value of r<sub>sweep</sub> for the second sweep section on Panel 0, e.g. <em class="mono">'0.500000'</em> given r<sub>sweep</sub> = 0.5 V/s.
+				The second line converts the queried string to a floating-point value, increases it by 10%, combines the result with the variable name, and sends the new string (e.g. <em class="mono">'panel0_sweep1_rate_up=0.550000'</em>).</td>
+			</tr>
+		</table></div>
+	</div>
+
+	<p id="get_sweep_id_example">In the previous example, the user must know the variable name to be modified <i>a priori</i>, specifically the appropriate panel id and the sweep id.
+	These values can also be queried using <a href="terminal.html#get_panel">get_panel()</a> and <a href="terminal.html#get_sweep_id">get_sweep_id()</a>, and then formatted into a variable name as in the following example.</p>
+
+	<div class="indent">
+		<p class="example"><b>Example: Easy variable name generation</b></p>
+		<div class="indent"><table class="spaceout">
+			<tr>
+				<td><i>Channels:</i></td>
+				<td>&#8942;<br/>
+				X<sub>2</sub> = <em class="mono">DAC(0, 0) / 100</em><br/>
+				X<sub>3</sub> = <em class="mono">DAC(0, 1) * 10</em><br/>
+				&#8942;</td>
+			</tr>
+			<tr>
+				<td><i>Commands:</i></td>
+				<td><em class="cmd">pid = get_panel()<br/>
+				sid = get_sweep_id(3)<br/>
+				set_var('panel{0:d}_sweep{1:d}_scaled_up={2:f}'.format(pid, sid, 24.0))</em></td>
+			</tr>
+			<tr>
+				<td><i>Result:</i></td>
+				<td>Assuming panel 0 is the active page, <em class="mono">pid</em> = 0 and <em class="mono">sid</em> = 1 because X<sub>3</sub> is the second invertible channel overall.
+				The full string passed to <em class="mono">set_var()</em> is <em class="mono">'panel0_sweep1_scaled_up=24.000000'</em> which will set the upper limit for sweeping X<sub>3</sub> to 24.0.</td>
+			</tr>
+		</table></div>
+	</div>
+
+	<p>The standard terminal commands are documented <a href="terminal.html">here</a>.
+	Additional features can be added to the terminal in two ways: user-defined terminal functions and "one-off" scripts:</p>
+
+	<h4 id="user-defined_functions">User-defined functions</h4>
+
+	<p>New functions definitions can be placed in <em class="mono">~/.config/mezurit2/terminal.py</em> (or equivalent, see <a href="installed_files.html">Installed files</a>) building on the existing set of <a href="terminal.html">commands</a>.
+	Once the changes are made, simply restart the terminal process using either the <em class="mono">quit()</em> command or the "Terminal | Restart" menu option.
+	This option works best when there is some degree of generality in the functions to be added so that it can be used for multiple measurements.</p>
+
+	<div class="indent">
+		<p class="example"><b>Example: Function to repeat a <em class="keyword">megasweep</em> at multiple temperatures (ver. 0.81+)</b></p>
+		<div class="indent"><table class="spaceout">
+			<tr>
+				<td><i>Code:</i></td>
+				<td><em class="mono">def gigasweep_temperature (sweep_ch, step_ch, V0, V1, N, basefile, temps) :<br/>
+				&nbsp;&nbsp;&nbsp;for T in temps :<br/>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gpib(0, 24, 'T{0:f}'.format(T), eos=0x400|0xd)<br/>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xleep(60)<br/>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;megasweep_up(sweep_ch, step_ch, V0, V1, N, basefile + '_{0:f}K.dat'.format(T))<br/>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;clear_buffer(False, False)</em></td>
+			</tr>
+			<tr>
+				<td><i>Command:</i></td>
+				<td><em class="cmd">gigasweep(1, 2, -10.0, 10.0, 40, 'dev01_run01', (1.4, 2.5, 5.0, 10.0, 20.0))</em></td>
+			</tr>
+			<tr>
+				<td><i>Result:</i></td>
+				<td>The megasweep is run five times at the specified temperatures, which are sent to an Oxford Temperature Controller using a GPIB command.
+				Mezurit 2 waits 60 seconds for the temperature to settle before beginning each measurement.
+				The data is saved in five separate files with names like <em class="mono">dev01_run01_1.40000K.dat</em>.</td>
+			</tr>
+		</table></div>
+	</div>
+
+	<h4 id="scripts">Scripts</h4>
+
+	<p>Another option is to place the desired commands in a custom script file, then run it via <em class="mono"><a href="http://docs.python.org/library/functions.html#execfile">execfile()</a></em>.
+	The script will run in the current terminal as if a user had typed in each line directly.
+	Note that, on its own, <em class="mono">execfile()</em> does not expand shortcuts such as <em class="mono">~</em> (relative paths are OK).</p>
+
+	<div class="indent">
+		<p class="example"><b>Example: Parametric megasweep</b></p>
+		<div class="indent"><table class="spaceout">
+			<tr>
+				<td><i>Code:</i></td>
+				<td><em class="mono"><a href="fancysweep.py">fancysweep.py</a></em> (save to a known location such as <em class="mono">/home/yourusername</em>)</td>
+			</tr>
+			<tr>
+				<td><i>Command:</i></td>
+				<td><em class="cmd">execfile('/home/yourusername/fancysweep.py')</em></td>
+			</tr>
+			<tr>
+				<td><i>Result:</i></td>
+				<td>The sweep parameters are adjusted between voltage steps to produce a non-rectangular megasweep. See the script for details.</td>
+			</tr>
+		</table></div>
+	</div>
+
+	<p>One advantage of this approach is that a copy of the script can be saved along with each <em class="keyword">datfile</em> as documentation.
+	For example, the script used to record <em class="mono">dev02_run03.dat</em> could be saved alongside as <em class="mono">dev02_run03_script.py</em>.
+	Another advantage is that the user does not have to remember what arguments to pass a custom function because every parameter must be mentioned explicitly in the script.</p>
+
+	<h4 id="synchronization">Synchronization</h4>
+
+	<p>While some scripts may perform a measurement by simply sending a continuous stream of commands, it is often necessary to wait for certain conditions before continuing to the next step.
+	This can be accomplished using the <em class="mono">catch_*</em> commands: <em class="mono"><a href="terminal.html#catch_sweep">catch_sweep()</a></em> for sweeps, <em class="mono"><a href="terminal.html#catch_scan_start">catch_scan_start()</a></em> and <em class="mono"><a href="terminal.html#catch_scan_finish">catch_scan_finish()</a></em> for scope scans, and <em class="mono"><a href="terminal.html#catch_signal">catch_signal()</a></em> for triggers.</p>
+
+	<p><em class="note">Tip:</em>
+	Explicit synchronization is more reliable and precise than using <em class="mono"><a href="terminal.html#xleep">xleep()</a></em>.
+	For example, while Mezurit 2 makes every effort to sweep at exactly the specified rate, jitter may creep in when starting and stopping due to synchronization between threads.
+	Thus, waiting 1.0 seconds for a 1.0 second sweep could result in the script continuing on slightly "ahead of schedule."</p>
+
+	<p><em class="warning">Warning/Tip:</em>
+	These functions do not return until the specified event has occurred.
+	If that event is never going to happen, i.e. due to user error, simply use the "Terminal | Abort" feature to regain control of the terminal.</p>
+
+</div>
+
+</td><td class="menu">
+	<p><a href="../index.html">Home</a></p>
+	<p><b>Online&nbsp;manual</b></p>
+	<p class="mini-indent"><a href="channel.html">Channel&nbsp;func.</a></p>
+	<p class="mini-indent"><a href="trigger.html">Trigger&nbsp;func.</a></p>
+	<p class="mini-indent"><a href="terminal.html">Terminal&nbsp;func.</a></p>
+	<p class="mini-indent"><a href="gpib.html">GPIB</a></p>
+	<p class="mini-indent"><a href="oldversion.html">Old version</a></p>
+	<p class="mini-indent"><a href="installed_files.html">Installed files</a></p>
+	<p><a href="../install.html">Installation</a></p>
+	<p><a href="../devel.html">Development</a></p>
+	<p><a href="../dl/">Downloads</a></p>
+</td></tr></table>
+
+<div id="footer"><p id="validate">W3C Validate [ <a href="http://validator.w3.org/check?uri=referer">XHTML</a> / <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> ]</p></div>
+
+</body>
+</html>

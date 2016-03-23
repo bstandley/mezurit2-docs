@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+	<link rel="stylesheet" type="text/css" href="common.css"/>
+	<title>Mezurit 2 - Development notes</title>
+</head>
+
+<body>
+
+<div><img src="logo.png" alt="Mezurit 2"/></div>
+<table id="page"><tr><td class="bar"></td><td class="content">
+
+<h2>Development notes</h2>
+
+<p>This page has information about debugging, improving, extending, and, last but not least, compiling Mezurit 2.
+If you simply wish to install it and are running Arch Linux, Ubuntu, or Windows, check out the <a href="install.html">installation instructions</a>.
+Feature requests, bug reports, patches, and even forked versions are all welcome: just sent the maintainer(s) an email.</p>
+
+<p>See the <a href="changelog.txt">changelog</a> and list of known <a href="bugs.txt">bugs and to-dos</a> for more the latest information.</p>
+
+<h3>Getting started</h3>
+
+<div class="indent">
+
+	<p>Libraries and their associated documentation:</p>
+
+	<div class="indent"><table class="spaceout">
+		<tr><th>Software</th><th>Documentation</th><th>Purpose</th></tr>
+		<tr class="first">
+			<td><a href="http://www.comedi.org/">Comedi</a></td>
+			<td>"<a href="http://www.comedi.org/doc/index.html">Comedilib handbook</a>"</td>
+			<td>The definitive Linux DAQ driver and library.</td>
+		</tr>
+		<tr>
+			<td><a href="http://linux-gpib.sourceforge.net/">Linux-GPIB</a></td>
+			<td>"<a href="http://linux-gpib.sourceforge.net/doc_html/index.html">Linux-GPIB Documentation</a>"</td>
+			<td>Provides drivers and a NI-compatible API to use GPIB cards.</td>
+		</tr>
+		<tr>
+			<td><a href="http://www.python.org/">Python</a></td>
+			<td>"<a href="http://docs.python.org/extending/">Extending and Embedding the Python Interpreter</a>"</td>
+			<td>Interprets channel definitions and processes terminal commands.</td>
+		</tr>
+		<tr>
+			<td><a href="http://www.gtk.org/">GTK+</a></td>
+			<td>"<a href="http://developer.gnome.org/gtk/stable/">GTK+ 2 Reference Manual</a>"<br/>
+			"<a href="http://developer.gnome.org/gtk3/stable/">GTK+ 3 Reference Manual</a>"</td>
+			<td>Library for creating the GUI and processing user input.</td>
+		</tr>
+		<tr class="last">
+			<td><a href="http://developer.gnome.org/vte/unstable/VteTerminal.html">VTE</a></td>
+			<td>"<a href="http://developer.gnome.org/vte/0.30/">VTE 0.30 Reference Manual</a>"</td>
+			<td>GTK widget for embedding a terminal in an application.</td>
+		</tr>
+	</table></div>
+
+	<p>The development packages for all of the above are needed to compile-in all possible features.
+	On Arch Linux, that means <em class="mono">comedilib</em>, <em class="mono">linux-gpib</em>, <em class="mono">python2</em>, <em class="mono">gtk2</em>, and <em class="mono">vte</em>.
+	On Ubuntu: <em class="mono">libcomedi-dev</em>, <em class="mono">libgpib0-dev</em> (available <a href="https://launchpad.net/~v-kukol/+archive/gpib">here</a>), <em class="mono">python2.7-dev</em> (or <em class="mono">python2.6-dev</em>), <em class="mono">libgtk2.0-dev</em>, and <em class="mono">libvte-dev</em>.</p>
+
+</div>
+
+<h3 id="compile">Compiling the code</h3>
+
+<div class="indent">
+
+	<p>Mezurit 2 is most easily compiled in a Linux environment, although it could probably be done in <a href="http://www.cygwin.com/">Cygwin</a>, too.
+	<em class="note">Note:</em>
+	Mezurit 2 does not use <a href="http://en.wikipedia.org/wiki/GNU_build_system">autotools</a>.
+	Instead, it includes a hand-coded <em class="mono">configure</em> script to generate a makefile.
+	Some functions of this script require <a href="http://www.perl.org/">perl</a>.</p>
+
+	<table>
+		<tr><td>1)</td><td><em class="cmd">wget http://www.ugcs.caltech.edu/~mezurit2/dl/mezurit2-0.91.tar.gz</em></td><td class="greedy">(obtain source package)</td></tr>
+		<tr><td>2)</td><td><em class="cmd">tar xfz mezurit2-0.91.tar.gz</em></td></tr>
+		<tr><td>3)</td><td><em class="cmd">cd mezurit2-0.91/</em></td></tr>
+		<tr><td>4)</td><td><em class="cmd">./configure --help</em></td><td>(view compile-time options, if desired)</td></tr>
+		<tr><td>5)</td><td><em class="cmd">./configure</em></td><td>(generate <em class="mono">Makefile</em> and <em class="mono">Makefile.dep</em>)</td></tr>
+		<tr><td>6)</td><td><em class="cmd">make</em></td></tr>
+		<tr><td class="spacer">&nbsp;</td></tr>
+		<tr><td colspan="3">Targeting <b>Microsoft Windows</b> requires a cross-compiler such as <a href="http://www.mingw.org/">MinGW</a> and the win32 versions of <a href="http://www.gtk.org/download/win32.php">GTK+</a>, <a href="http://www.python.org">Python</a>, and <a href="https://launchpad.net/pyreadline">pyreadline</a>.
+		A script called <em class="mono">get_win32_libs.sh</em> is included with the source to automatically download and configure these packages (requires <a href="http://www.winehq.org/">WINE</a>).
+		In addition, compiling-in support for DAQ or GPIB cards requires several files copied from a Windows installation of the applicable <a href="http://www.ni.com/">National Instruments</a> drivers.
+		(If you don't have access to such a machine, you are unfortunately out of luck in that department.)
+		The steps are similar to those above, with a few additions and modifications:</td></tr>
+		<tr><td class="dotdotdot">&#8942;</td></tr>
+		<tr><td>3.1)</td><td><em class="cmd">mkdir $HOME/win32</em></td><td>(create a temporary directory for the win32 libraries)</td></tr>
+		<tr><td>3.2)</td><td><em class="cmd">utils/get_win32_libs.sh $HOME/win32</em></td><td>(argument <i>must</i> be an absolute path, may take a few minutes)</td></tr>
+		<tr><td>3.3)</td><td>(manually copy additional files from a Windows machine)</td><td>(see <a href="ni_files.html">Table of National Instruments files</a>)</td></tr>
+		<tr><td class="dotdotdot">&#8942;</td></tr>
+		<tr><td>5)</td><td><em class="cmd">./configure --mingw --win32path=$HOME/win32</em></td><td>(see <em class="mono">--driver</em> option to specify NI-DAQmx, etc.)</td></tr>
+		<tr><td class="dotdotdot">&#8942;</td></tr>
+	</table>
+
+</div>
+
+<h3>Linux installation, package generation</h3>
+
+<div class="indent"><table>
+	<tr><td>7)</td><td><em class="cmd">sudo make install</em></td></tr>
+	<tr><td>8)</td><td><em class="cmd">sudo checkinstall</em></td><td>(Ubuntu only, generates <em class="mono">.deb</em>.)</td></tr>
+</table></div>
+
+<h3>Windows package generation</h3>
+
+<div class="indent">
+
+	<p>The Windows version of Mezurit 2 is distributed in a self-contained directory (including GTK and Python libraries), so package generation is simple:</p>
+
+	<table>
+		<tr><td>7)</td><td><em class="cmd">make install_local</em></td></tr>
+		<tr><td>8)</td><td><em class="cmd">zip -r Mezurit2-0.91.zip Mezurit2/</em></td></tr>
+	</table>
+
+</div>
+
+<h3>Testing (Linux only)</h3>
+
+<div class="indent">
+
+	<p>Mezurit 2 can be "installed" to a local directory for easy testing. When invoked it will load resource files from the local install directory rather than <em class="mono">/usr/share/mezurit2</em>.
+	However, it will still access (and possibly update) files in the user config directory <em class="mono">~/.config/mezurit2</em>.</p>
+
+	<table>
+		<tr><td>7)</td><td><em class="cmd">make install_local</em></td></tr>
+		<tr><td>8)</td><td><em class="cmd">mezurit2/mezurit2</em></td></tr>
+		<tr><td class="spacer">&nbsp;</td></tr>
+		<tr><td colspan="2">After editing source files, simply repeat step 7 to recompile.
+		If preprocessor directives, e.g. <em class="mono">#include</em> or <em class="mono">#ifdef</em>, were modified, it is a good idea to do <em class="cmd">make clean</em> and <em class="cmd">./configure --regen</em> to get an updated copy of <em class="mono">Makefile.dep</em>.</td></tr>
+		<tr><td class="spacer">&nbsp;</td></tr>
+		<tr><td colspan="2">Memory leaks and other errors can be found using <a href="http://valgrind.org/">Valgrind</a>.
+		A simple (but overzealous) suppression file is included with Mezurit2 in the <em class="mono">utils</em> directory.</td></tr>
+		<tr><td>9)</td><td class="greedy"><em class="cmd">valgrind --leak-check=full --suppressions=utils/m2.supp mezurit2/mezurit2</em></td></tr>
+	</table>
+
+</div>
+
+<h3>Comedi testing</h3>
+
+<div class="indent">
+
+	<p>It is possible to connect to a "virtual" comedi device if you have the comedi modules installed using the steps below.
+	Note this is different from the "Dummy" option because Mezurit 2 will think it is connected to a real, physical board.
+	This can be useful for debugging the functions in <em class="mono">src/lib/hardware</em>.</p>
+
+	<table>
+		<tr><td>1)</td><td><em class="cmd">modprobe comedi comedi_num_legacy_minors=4</em></td><td>(force the creation of device nodes)</td></tr>
+		<tr><td>2)</td><td><em class="cmd">modprobe comedi_test</em></td><td></td></tr>
+		<tr><td>3)</td><td><em class="cmd">comedi_config /dev/comedi0 comedi_test</em></td><td></td></tr>
+		<tr><td>4)</td><td><em class="cmd">chmod 660 /dev/comedi0*</em></td><td></td></tr>
+		<tr><td>5)</td><td><em class="cmd">chgrp iocard /dev/comedi0*</em></td><td>(replace <em class="mono">iocard</em> with the appropriate group on your system)</td></tr>
+	</table>
+
+</div>
+
+<h3>Tips</h3>
+
+<ul>
+	<li>All pixmaps used by Mezurit 2 are converted from SVG files residing in the <em class="mono">resource/pixmaps</em> directory.
+	To regenerate all the pixmaps, simply run:<br/>
+	<em class="cmd">utils/convert_pixmaps.sh resource/pixmaps/</em> (requires <a href="http://librsvg.sourceforge.net/">librsvg</a>)</li>
+
+	<li>Reading raw data generated by an ongoing comedi_cmd from the device's internal buffer, e.g.<br/>
+	<em class="mono" style="line-height: 250%"> read(comedi_fileno(comedi_dev), &local_buffer[offset], bytes_available)</em><br/>
+	can be a bit tricky.
+	The <em class="mono">read()</em> function begins where the last invocation left off, and "marks as read" the portion of the internal buffer that was transferred out.
+	When the end of the internal buffer is reached, comedi simply returns to the beginning, overwriting bytes which (hopefully) have already been transferred.
+	The trick is that in this case <em class="mono">read()</em> may return prematurely, having read only the data between the "file" pointer and the "end" of the internal buffer.
+	Therefore, Mezurit 2 always calls <em class="mono">comedi_get_buffer_contents()</em> before reading, and calls <em class="mono">read()</em> a second time if the first does not transfer the promised number of bytes.
+	(See <em class="mono">daq_SCAN_read()</em> in <em class="mono">src/lib/hardware/daq_scan.c</em> for more information.)</li>
+</ul>
+
+</td><td class="menu">
+	<p><a href="index.html">Home</a></p>
+	<p><a href="doc/index.html">Online manual</a></p>
+	<p><a href="install.html">Installation</a></p>
+	<p><b>Development</b></p>
+	<p class="mini-indent"><a href="changelog.txt">Changelog</a></p>
+	<p class="mini-indent"><a href="bugs.txt">Bugs,&nbsp;to-dos</a></p>
+	<p class="mini-indent"><a href="ni_files.html">NI files</a></p>
+	<p><a href="dl/">Downloads</a></p>
+</td></tr></table>
+
+<div id="footer"><p id="validate">W3C Validate [ <a href="http://validator.w3.org/check?uri=referer">XHTML</a> / <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> ]</p></div>
+
+</body>
+</html>

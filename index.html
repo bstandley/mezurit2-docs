@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+	<link rel="stylesheet" type="text/css" href="common.css"/>
+	<title>Mezurit 2</title>
+</head>
+
+<body>
+
+<div><img src="logo.png" alt="Mezurit 2"/></div>
+<table id="page"><tr><td class="bar"></td><td class="content">
+
+<h2>Introduction</h2>
+
+<div class="indent">
+
+	<p>The goal of Mezurit 2 is to make the setup and operation of electronics experiments quick and easy, while providing mechanisms for complex automation.
+	In a typical scenario, the user begins in <i>setup mode</i> by defining several <i>virtual channels</i>, each corresponding to a different physical quantity present in the device under test, as functions of available input and outputs provided by data acquisition (DAQ) boards and GPIB-accessible parameters of external instruments.
+	Switching to <i>panel mode</i>, the user can control several <a href="http://en.wikipedia.org/wiki/Virtual_instrumentation">virtual instruments</a> which provide mechanisms to view and record data, sweep outputs, and configure event triggers, all in real-time.
+	After working out the optimal procedure, the user can then write a script to automate everything using Mezurit 2's comprehensive Python-based scripting interface.</p>
+
+	<!-- <p>For a bit more detail, see <a href="doc/index.html#survey_mission">The Survey Mission</a>.</p> -->
+
+</div>
+
+<h2>Features</h2>
+
+<table class="columns"><tr>
+	<td><ul>
+		<li>Continuous and timed data acquisition (DAQ)</li>
+		<li>High-speed (~100 kHz) acquisition</li>
+		<li>Simple, yet powerful, Python-based virtual channel definition</li>
+		<li>Automatic SI prefix support</li>
+		<li>Control multiple DAQ and GPIB boards simultaneously</li>
+		<li>Real-time plotting with auto-zoom</li>
+		<li>Automatic output sweeps with fine-grained adjustments</li>
+		<li>Save and restore configuration</li>
+	</ul></td>
+	<td><ul>
+		<li>Embedded Python-based command line terminal</li>
+		<li>All features accessible from scripting interface</li>
+		<li>Scripts execute in a separate process to enhance stability</li>
+		<li>Signal input and output over GPIB</li>
+		<li>Moving average noise reduction</li>
+		<li>Per-channel binning</li>
+		<li>Arbitrary event triggers</li>
+		<li>User-defined GPIB functions</li>
+	</ul></td>
+</tr></table>
+
+<h2>Screenshots</h2>
+
+<div class="indent"><table id="scr"><tr>
+	<td><a href="setup_scr.png"><img src="setup_scr_small.png" alt="Mezurit 2 setup mode"/></a><br/>See also: <a href="setup_scr_xp.png">Win. XP</a>, <a href="setup_scr_7.png">Win. 7</a></td>
+	<td><a href="panel_scr.png"><img src="panel_scr_small.png" alt="Mezurit 2 panel mode"/></a><br/>See also: <a href="panel_scr_xp.png">Win. XP</a>, <a href="panel_scr_7.png">Win. 7</a></td>
+</tr></table></div>
+
+<h2>Documentation</h2>
+
+<ul>
+	<li>Online <a href="doc/index.html">manual</a></li>
+	<li>Installation <a href="install.html">instructions</a> including Arch Linux, Ubuntu, and Windows</li>
+	<li>Development <a href="devel.html">notes</a> and <a href="changelog.txt">changelog</a></li>
+</ul>
+
+<h2 id="downloads">Latest Downloads</h2>
+
+<div class="indent">
+	<table>
+		<tr><th>File</th><th>Type</th><th>Dependencies</th></tr>
+		<tr class="first">
+			<td><em class="mono"><a href="dl/mezurit2-0.91.tar.gz">mezurit2-0.91.tar.gz</a></em></td>
+			<td>Source code</td>
+			<td>See development <a href="devel.html">notes</a>.</td>
+		</tr>
+		<tr>
+			<td><em class="mono"><a href="dl/mezurit2-0.91-1-x86_64.pkg.tar.xz">mezurit2-0.91-1-x86_64.pkg.tar.xz</a></em></td>
+			<td>Arch Linux package (64-bit)</td>
+			<td>See installation <a href="install.html#arch">instructions</a>.</td>
+		</tr>
+		<tr>
+			<td><em class="mono"><a href="dl/mezurit2_0.91-1_i386_precise.deb">mezurit2_0.91-1_i386_precise.deb</a></em></td>
+			<td>Ubuntu package (12.04, 32-bit)</td>
+			<td>See installation <a href="install.html#ubuntu">instructions</a>.</td>
+		</tr>
+		<tr>
+			<td><em class="mono"><a href="dl/Mezurit2-0.91-DAQmx.zip">Mezurit2-0.91-DAQmx.zip</a></em></td>
+			<td>Windows .zip</td>
+			<td>NI-DAQmx, NI-488 (GPIB)<sup>*</sup></td>
+		</tr>
+		<tr class="last">
+			<td><em class="mono"><a href="dl/Mezurit2-0.91-TDAQ.zip">Mezurit2-0.91-TDAQ.zip</a></em></td>
+			<td>Windows .zip</td>
+			<td>NI-DAQ (legacy), NI-488 (GPIB)<sup>*</sup></td>
+		</tr>
+	</table>
+	<small><sup>*</sup> See <a href="install.html#windows">instructions</a> for more information.</small>
+	<p>PGP signatures and older versions can be found <a href="dl/">here</a>.</p>
+</div>
+
+<h2>Maintainer(s)</h2>
+
+<ul>
+	<li><a href="http://www.brianstandley.com/">Brian Standley</a> &lt;brian@brianstandley.com&gt; (<a href="http://pgp.mit.edu:11371/pks/lookup?op=vindex&amp;search=0x3DB7BF377E7B0AE8">PGP key</a>)</li>
+</ul>
+
+</td><td class="menu">
+	<p><b>Home</b></p>
+	<p><a href="doc/index.html">Online manual</a></p>
+	<p><a href="install.html">Installation</a></p>
+	<p><a href="devel.html">Development</a></p>
+	<p><a href="dl/">Downloads</a></p>
+</td></tr></table>
+
+<div id="footer">
+	<p id="thanks">Site hosted on the Caltech <a href="http://www.ugcs.caltech.edu/">UGCS cluster</a>.
+	Thanks to the sysadmins for their hard work!</p>
+	<p id="validate">W3C Validate [ <a href="http://validator.w3.org/check?uri=referer">XHTML</a> / <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> ]</p>
+</div>
+
+</body>
+</html>

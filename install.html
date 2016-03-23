@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+	<link rel="stylesheet" type="text/css" href="common.css"/>
+	<title>Mezurit 2 - Installation instructions</title>
+</head>
+
+<body>
+
+<div><img src="logo.png" alt="Mezurit 2"/></div>
+<table id="page"><tr><td class="bar"></td><td class="content">
+
+<h2>Installation instructions</h2>
+
+<p>Installing Mezurit 2 on your computer is simple in most cases.
+On Windows, the pre-complied packages available in the <a href="index.html#downloads">downloads</a> section should work "out of the box" (details <a href="#windows">below</a>).
+Binary packages are also available for Arch Linux and Ubuntu, but require one or two non-standard libraries detailed below.
+If you are running a different distribution, instructions for compiling Mezurit 2 are <a href="devel.html#compile">here</a> and, for Linux-GPIB, <a href="old_linux_gpib.html">here</a>.</p>
+
+<h3 id="arch">Arch Linux</h3>
+
+<div class="indent">
+
+	<p>For <a href="http://www.archlinux.org/">Arch Linux</a> users, prototype PKGBUILDs and 64-bit packages are provided below:</p>
+
+	<div class="indent">
+
+		<table>
+			<tr><th>Directory</th><th>Package</th><th>Notes</th></tr>
+			<tr class="first">
+				<td><em class="mono"><a href="abs/mezurit2/">mezurit2/</a></em></td>
+				<td><em class="mono"><a href="dl/mezurit2-0.91-1-x86_64.pkg.tar.xz">mezurit2-0.91-1-x86_64.pkg.tar.xz</a></em></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td><em class="mono"><a href="abs/comedilib/">comedilib/</a></em></td>
+				<td><em class="mono"><a href="dl/third_party_libs/comedilib-20110817-1-x86_64.pkg.tar.xz">comedilib-20110817-1-x86_64.pkg.tar.xz</a></em></td>
+				<td>Contains header and library files. (Kernel modules are included with the standard kernel package.)</td>
+			</tr>
+			<tr class="last">
+				<td><em class="mono"><a href="abs/linux-gpib/">linux-gpib/</a></em></td>
+				<td><em class="mono"><a href="dl/third_party_libs/linux-gpib-3.2.16-1-x86_64.pkg.tar.xz">linux-gpib-3.2.16-1-x86_64.pkg.tar.xz</a></em></td>
+				<td>Contains header and library files, but the PKGBUILD is capable of generating kernel modules as well.</td>
+			</tr>
+		</table>
+
+		<p>Source code (per <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html">GPL</a>, <a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html">LGPL</a> requirements) for the third party libraries can be found in their respective project directories.
+		PGP signatures and older versions can be found <a href="dl">here</a>.</p>
+
+	</div>
+
+	<p>These packages might be added to the <a href="https://aur.archlinux.org/">AUR</a> or placed in an unofficial <a href="https://wiki.archlinux.org/index.php/Unofficial_User_Repositories">repo</a> at some point in the future.
+	For now they must be installed manually, i.e.:<br/>
+	<em class="cmd">pacman -U mezurit2-0.91-1-x86_64.pkg.tar.gz</em></p>
+
+	<p><i>Important</i>: If you have a GPIB card and actually want to use it with Mezurit 2, you will need to run <a href="https://wiki.archlinux.org/index.php/Makepkg">makepkg</a> on the PKGBUILD above to install driver modules for your current kernel. (This will create a separate package: <em class="mono">linux-gpib-modules</em>.)</p>
+
+	<p style="color: #555;">[<i>TODO:</i>: Mention <em class="mono">comedi_config</em>, <em class="mono">gpib_config</em>, and dev node permissions.]</p>
+
+</div>
+
+<h3 id="ubuntu">Ubuntu</h3>
+
+<div class="indent">
+
+	<p>The standard <a href="http://www.ubuntu.com/">Ubuntu</a> software archives include everything needed to run Mezurit 2 except for up-to-date GPIB support.
+	Fortunately, there is a <a href="https://launchpad.net/~v-kukol/+archive/gpib">PPA</a> maintained by Vsevolod Kukol to fill this gap.
+	(If the PPA does not work for you, check out the "old fashioned" <a href="old_linux_gpib.html">procedure</a>.)</p>
+
+	<table>
+		<tr><td>1)</td><td>Download the package for your system from the table below.</td></tr>
+		<tr><td class="spacer">&nbsp;</td></tr>
+		<tr><td colspan="3"><div class="indent">
+			<table>
+				<tr><th>Version</th><th>Code name</th><th>Package</th></tr>
+				<tr class="first"><td>12.04</td><td>Precise Pangolin</td><td><em class="mono"><a href="dl/mezurit2_0.91-1_i386_precise.deb">mezurit2_0.91-1_i386_precise.deb</a></em></td></tr>
+				<tr><td>11.10</td><td>Oneiric Ocelot</td><td><em class="mono"><a href="dl/mezurit2_0.91-1_i386_oneiric.deb">mezurit2_0.91-1_i386_oneiric.deb</a></em></td></tr>
+				<tr><td>11.04</td><td>Natty Narwhal</td><td><em class="mono"><a href="dl/mezurit2_0.91-1_i386_natty.deb">mezurit2_0.91-1_i386_natty.deb</a></em></td></tr>
+				<tr><td>10.10</td><td>Maverick Meerkat</td><td><em class="mono"><a href="dl/mezurit2_0.91-1_i386_maverick.deb">mezurit2_0.91-1_i386_maverick.deb</a></em></td></tr>
+				<tr class="last"><td>10.04</td><td>Lucid Lynx</td><td><em class="mono"><a href="dl/mezurit2_0.91-1_i386_lucid.deb">mezurit2_0.91-1_i386_lucid.deb</a></em></td></tr>
+			</table>
+			<p>Older versions are available <a href="dl/">here</a>.</p>
+		</div></td></tr>
+		<tr><td>2)</td><td><em class="cmd">apt-get install python-software-properties</em></td><td>(enable the <em class="mono">apt-add-repository</em> command)</td></tr>
+		<tr><td>3)</td><td><em class="cmd">apt-add-repository ppa:v-kukol/gpib &amp;&amp; apt-get update</em></td><td>(add the PPA to <em class="mono">/etc/apt/sources.list.d/</em>)</td></tr>
+		<tr><td>4)</td><td><em class="cmd">dpkg -i $package</em></td><td>(replace <em class="mono">$package</em> with the downloaded file)</td></tr>
+		<tr><td>5)</td><td><em class="cmd">apt-get -f install</em></td><td>(fix any missing dependencies)</td></tr>
+		<tr><td class="spacer">&nbsp;</td></tr>
+		<tr><td colspan="3">If your system actually contains a GPIB card, there is one last step:</td></tr>
+		<tr><td>6)</td><td><em class="cmd">apt-get install gpib-modules-dkms</em></td><td>(if not already installed)</td></tr>
+	</table>
+
+	<p>It may be necessary to add the following lines to <em class="mono">/etc/rc.local</em> to gain access on the device nodes:<br/>
+	<em class="mono">&nbsp;&nbsp; gpib_config<br/>&nbsp;&nbsp; chgrp iocard /dev/gpib*<br/>&nbsp;&nbsp; chmod 660 &nbsp;&nbsp; /dev/gpib*</em></p>
+
+	<p>Also, add your user to the <em class="mono">iocard</em> group using the "Users and Groups" utility or:<br/>
+	<em class="cmd">adduser $(whoami) iocard</em></p>
+
+	<p>Finally, <i>reboot</i>.</p>
+
+</div>
+
+<h3 id="windows">Windows XP (and later)</h3>
+
+<div class="indent">
+
+	<p><em class="warning">Warning:</em>
+	Mezurit 2 has a known (slow) memory leak (probably) caused by the Windows verson of GTK+.
+	To allieviate the problem, simply roll-up/hide the <em class="tool">Acquisition</em> tool during long measurements.</p>
+
+	<p>To install Mezurit 2 on Windows:</p>
+
+	<table>
+		<tr><td>1)</td><td class="greedy">Download the appropriate version from the table below.</td></tr>
+		<tr><td class="spacer">&nbsp;</td></tr>
+		<tr><td colspan="2"><div class="indent">
+			<table>
+				<tr><th>DAQ</th><th>GPIB</th><th>Package</th><th>Notes</th></tr>
+				<tr class="first"><td>NI-DAQmx</td><td>NI-488.2</td><td><em class="mono"><a href="dl/Mezurit2-0.91-DAQmx.zip">Mezurit2-0.91-DAQmx.zip</a></em></td><td>Recommended version<sup>*</sup></td></tr>
+				<tr><td>NI-DAQmx</td><td>-</td><td><em class="mono"><a href="dl/Mezurit2-0.91-DAQmx-nogpib.zip">Mezurit2-0.91-DAQmx-nogpib.zip</a></em></td></tr>
+				<tr><td>NI-DAQ (legacy)</td><td>NI-488.2</td><td><em class="mono"><a href="dl/Mezurit2-0.91-TDAQ.zip">Mezurit2-0.91-TDAQ.zip</a></em></td></tr>
+				<tr><td>NI-DAQ (legacy)</td><td>-</td><td><em class="mono"><a href="dl/Mezurit2-0.91-TDAQ-nogpib.zip">Mezurit2-0.91-TDAQ-nogpib.zip</a></em></td></tr>
+				<tr class="last"><td>-</td><td>-</td><td><em class="mono"><a href="dl/Mezurit2-0.91-dummy.zip">Mezurit2-0.91-dummy.zip</a></em></td><td>For testing purposes.</td></tr>
+			</table>
+			<small><sup>*</sup> Mezurit 2 runs equally well using the new <a href="http://www.ni.com/dataacquisition/nidaqmx.htm">NI-DAQmx</a> and older <a href="http://sine.ni.com/psp/app/doc/p/id/psp-269/lang/en">NI-DAQ</a> drivers.
+			If you have the option, go with the newer system.</small>
+			<p>Older versions are available <a href="dl/">here</a>.
+			Per <a href="http://www.gnu.org/licenses/old-licenses/lgpl-2.0.html">LGPL</a> requirement, source code for GTK+ is available <a href="dl/third_party_src/">here</a>.</p>
+		</div></td></tr>
+		<tr><td>2)</td><td>Unzip (i.e. right-click, "Extract all") to the location of your choice.</td></tr>
+		<tr><td>3)</td><td>(Optional) Make a shortcut to <em class="mono">Mezurit2.exe</em> and place it in a convenient location.</td></tr>
+	</table>
+
+	<p><em class="note">Note:</em>
+	If you get an "application failed to initialize properly 0xc0150002" error on startup, your system probably lacks <em class="mono">msvcr90.dll</em>.
+	Fix this by installing <a href="http://www.microsoft.com/download/en/details.aspx?id=5582">Microsoft Visual C++ 2008 Redistributable Package</a>.</p>
+
+</div>
+
+</td><td class="menu">
+	<p><a href="index.html">Home</a></p>
+	<p><a href="doc/index.html">Online manual</a></p>
+	<p><b>Installation</b></p>
+	<p class="mini-indent"><a href="old_linux_gpib.html">Linux-GPIB</a></p>
+	<p><a href="devel.html">Development</a></p>
+	<p><a href="dl/">Downloads</a></p>
+</td></tr></table>
+
+<div id="footer"><p id="validate">W3C Validate [ <a href="http://validator.w3.org/check?uri=referer">XHTML</a> / <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> ]</p></div>
+
+</body>
+</html>
