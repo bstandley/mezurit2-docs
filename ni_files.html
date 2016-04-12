@@ -17,60 +17,45 @@
 <div class="mini-indent">
 
 	<table>
-		<tr><th>Library</th><th>File</th><th>Typical Windows directory</th><th></th><th>Target directory</th></tr>
+		<tr><th>Library</th><th>File</th><th>Typical Windows directories</th></tr>
 		<tr class="first">
 			<td>NI-DAQ (legacy)</td>
 			<td><em class="mono">nidaq.h</em></td>
 			<td><em class="mono">C:\Program Files\National Instruments\NI-DAQ\Include</em></td>
-			<td>&rarr;</td>
-			<td><em class="mono">$HOME/win32/NI-DAQ/Include</em></td>
 		</tr>
 		<tr>
 			<td></td>
 			<td><em class="mono">nidaq32.lib</em></td>
 			<td><em class="mono">C:\Program Files\National Instruments\NI-DAQ\Lib</em></td>
-			<td>&rarr;</td>
-			<td><em class="mono">$HOME/win32/NI-DAQ/Lib</em></td>
 		</tr>
 		<tr>
 			<td></td>
 			<td><em class="mono">nidex32.lib</em></td>
 			<td><em class="mono">C:\Program Files\National Instruments\NI-DAQ\Lib</em></td>
-			<td>&rarr;</td>
-			<td><em class="mono">$HOME/win32/NI-DAQ/Lib</em></td>
 		</tr>
 		<tr class="first">
-			<td>NI-DAQmx</td>
-			<td><em class="mono">NIDAQmx.h</em></td>
-			<td><em class="mono">C:\Program Files\National Instruments\NI-DAQ\DAQmx ANSI C Dev\include</em></td>
-			<td>&rarr;</td>
-			<td><em class="mono">$HOME/win32/NI-DAQ/DAQmx ANSI C Dev/include</em></td>
+			<td>NI-DAQmx</br>&nbsp;</td>
+			<td><em class="mono">NIDAQmx.h</br>&nbsp;</em></td>
+			<td><em class="mono">C:\Program Files\National Instruments\NI-DAQ\DAQmx ANSI C Dev\include</br>C:\Program Files\National Instruments\Shared\ExternalCompilerSupport\C\include</em></td>
 		</tr>
 		<tr>
 			<td></td>
-			<td><em class="mono">NIDAQmx.lib</em></td>
-			<td><em class="mono">C:\Program Files\National Instruments\NI-DAQ\DAQmx ANSI C Dev\lib\msvc</em></td>
-			<td>&rarr;</td>
-			<td><em class="mono">$HOME/win32/NI-DAQ/DAQmx ANSI C Dev/lib/msvc</em></td>
+			<td><em class="mono">NIDAQmx.lib</br>&nbsp;</em></td>
+			<td><em class="mono">C:\Program Files\National Instruments\NI-DAQ\DAQmx ANSI C Dev\lib\msvc</br>C:\Program Files\National Instruments\Shared\ExternalCompilerSupport\C\lib32\msvc</em></td>
 		</tr>
 		<tr class="first">
-			<td>NI-488</td>
-			<td><em class="mono">ni488.h</em></td>
-			<td><em class="mono">C:\Program Files\National Instruments\NI-488.2\?\Include</em></td>
-			<td>&rarr;</td>
-			<td><em class="mono">$HOME/win32/NI-488</em></td>
+			<td>NI-488.2</br>&nbsp;</td>
+			<td><em class="mono">ni488.h</br>&nbsp;</em></td>
+			<td><em class="mono">C:\Program Files\National Instruments\NI-488.2\...\Include</br>C:\Program Files\National Instruments\Shared\ExternalCompilerSupport\C\include</em></td>
 		</tr>
 		<tr class="last">
 			<td></td>
-			<td><em class="mono">gpib-32.obj</em></td>
-			<td><em class="mono">C:\Program Files\National Instruments\NI-488.2\?\Lib</em></td>
-			<td>&rarr;</td>
-			<td><em class="mono">$HOME/win32/NI-488</em></td>
+			<td><em class="mono">gpib-32.obj</br>&nbsp;</em></td>
+			<td><em class="mono">C:\Program Files\National Instruments\NI-488.2\...\Lib</br>C:\Program Files\National Instruments\Shared\ExternalCompilerSupport\C\lib32\msvc</em></td>
 		</tr>
 	</table>
 
-	<p>One simple approach would be to search for each file on the Windows machine, copy it to a flash drive, and then install each file in the appropriate directory on the Linux machine.
-	Note that the target directory structure will need to be created manually.</p>
+	<p>One simple approach would be to search for each file on the Windows machine, copy it to a flash drive, and then install the files in the desired directory on the Linux machine.</p>
 
 </div>
 
